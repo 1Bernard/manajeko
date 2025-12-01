@@ -1,0 +1,17 @@
+/* Scrollbar styling */
+:host ::ng-deep .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+}
+
+:host ::ng-deep .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+:host ::ng-deep .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 3px;
+}
+
+:host ::ng-deep .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #d1d5db;
+}

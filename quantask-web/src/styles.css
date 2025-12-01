@@ -1,0 +1,115 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css');
+@import "tailwindcss";
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom animations */
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 3s ease-in-out infinite;
+}
+
+.duration-\[3000ms\] {
+  animation-duration: 3000ms;
+}
+
+.duration-\[4000ms\] {
+  animation-duration: 4000ms;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.rotate-x-12 {
+  transform: rotateX(12deg);
+}
+
+/* Custom scrollbar */
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 3px;
+  }
+}
+
+/* International Phone Input Styling */
+.iti {
+  width: 100%;
+}
+
+.iti__flag-container {
+  border-radius: 0.75rem 0 0 0.75rem;
+}
+
+.iti__selected-flag {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-right: none;
+  border-radius: 0.75rem 0 0 0.75rem;
+  padding: 0 0 0 12px;
+}
+
+.iti__selected-flag:hover {
+  background-color: #ffffff;
+}
+
+.iti input[type="tel"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0 0.75rem 0.75rem 0;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.iti input[type="tel"]:focus {
+  background-color: #ffffff;
+  border-color: #6366f1;
+}
+
+.iti__country-list {
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  max-height: 200px;
+}
+
+.iti__country:hover {
+  background-color: #f3f4f6;
+}
+
+.iti__country.iti__highlight {
+  background-color: #eef2ff;
+}
+
+.iti__dial-code {
+  color: #6b7280;
+}

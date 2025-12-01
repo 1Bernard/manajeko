@@ -1,0 +1,100 @@
+<div class="uploader-container">
+    <!-- Dropzone -->
+    <label class="drop-zone" [class.drop-zone-active]="isDragging" (drop)="onDrop($event)"
+        (dragover)="onDragOver($event); isDragging = true" (dragleave)="isDragging = false" (click)="fileInput.click()">
+        <div class="drop-zone-prompt">
+            <lucide-icon [img]="Upload" [size]="48" class="text-indigo-600 mb-2"></lucide-icon>
+            <p class="text-sm text-gray-500 mb-1">
+                <span class="upload-link text-indigo-600 font-semibold cursor-pointer hover:underline">Click to
+                    upload</span> or drag and drop
+            </p>
+            <p class="text-xs text-gray-400">{{ accept === 'image/*' ? 'Images only' : 'Files' }} (Max {{
+                bytesToSize(maxSize) }})</p>
+        </div>
+        <input #fileInput type="file" class="hidden" [multiple]="multiple" [accept]="accept"
+            (change)="onFileInputChange($event)">
+    </label>
+
+    <!-- File List -->
+    <div #fileListArea class="file-list-area" *ngIf="filesStore.length > 0">
+        <div *ngFor="let fileWrapper of filesStore; let i = index" class="file-item">
+            <!-- Drag Handle -->
+            <span class="drag-handle" title="Drag to reorder">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                        d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                </svg>
+            </span>
+
+            <!-- Thumbnail -->
+            <img *ngIf="isImage(fileWrapper.file)" [src]="fileWrapper.src" alt="Preview" class="file-thumbnail">
+            <div *ngIf="!isImage(fileWrapper.file)"
+                class="file-thumbnail flex items-center justify-center text-2xl font-bold"
+                [ngClass]="getFileTypeClass(fileWrapper.file)">
+                {{ getFileTypeIcon(fileWrapper.file) }}
+            </div>
+
+            <!-- File Details -->
+            <div class="file-details">
+                <div class="file-name">{{ fileWrapper.file.name }}</div>
+                <div class="file-size">{{ bytesToSize(fileWrapper.file.size) }}</div>
+            </div>
+
+            <!-- Actions -->
+            <div class="file-actions">
+                <!-- Crop Button (only for images) -->
+                <button *ngIf="isImage(fileWrapper.file)" type="button" class="action-button crop-btn"
+                    title="Crop image" (click)="openCropModal(i)">
+                    <lucide-icon [img]="Crop" [size]="20"></lucide-icon>
+                </button>
+
+                <!-- Progress Bar -->
+                <div class="file-progress-container" *ngIf="!fileWrapper.complete">
+                    <div class="file-progress-bar">
+                        <div class="file-progress" [style.width.%]="fileWrapper.progress"></div>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="file-status">
+                    <span class="file-status-percentage" *ngIf="!fileWrapper.complete">{{
+                        Math.round(fileWrapper.progress) }}%</span>
+                    <span class="file-status-complete" *ngIf="fileWrapper.complete">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                            class="w-5 h-5 text-emerald-500">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                </div>
+
+                <!-- Delete Button -->
+                <button type="button" class="action-button delete-btn" title="Remove file" (click)="removeFile(i)">
+                    <lucide-icon [img]="Trash2" [size]="20"></lucide-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cropping Modal -->
+<div *ngIf="showCropModal" class="crop-modal">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3 class="text-lg font-bold text-gray-900">Crop Image</h3>
+            <button class="modal-close-btn" (click)="closeCropModal()">
+                <lucide-icon [img]="X" [size]="24"></lucide-icon>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="crop-container">
+                <img #imageToCrop src="" alt="Image to crop">
+            </div>
+            <div class="modal-actions">
+                <button (click)="closeCropModal()" class="btn btn-secondary">Cancel</button>
+                <button (click)="confirmCrop()" class="btn btn-primary">Apply Crop</button>
+            </div>
+        </div>
+    </div>
+</div>

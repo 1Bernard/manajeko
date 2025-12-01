@@ -1,0 +1,310 @@
+<div class="fixed inset-0 z-50 flex justify-end bg-slate-900/20 backdrop-blur-[2px] transition-all"
+    (click)="onBackdropClick($event)">
+    <div
+        class="w-full max-w-[700px] bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 border-l border-gray-100">
+
+        <!-- Panel Header -->
+        <div class="flex items-center justify-between px-8 py-5 border-b border-gray-100 bg-white z-10">
+            <div class="flex items-center gap-2 text-gray-400 text-sm">
+                <button (click)="close.emit()"
+                    class="hover:text-gray-800 p-1 hover:bg-gray-100 rounded transition-colors">
+                    <lucide-icon [img]="LayoutGrid" [size]="18"></lucide-icon>
+                </button>
+                <span>/</span>
+                <span class="truncate max-w-[150px] font-medium text-gray-500">Craftboard Project</span>
+                <span>/</span>
+                <span class="text-gray-800 font-bold bg-gray-100 px-2 py-0.5 rounded text-xs uppercase tracking-wide">{{
+                    task.status }}</span>
+            </div>
+            <div class="flex items-center gap-2 text-gray-400">
+                <button class="hover:text-indigo-600 p-2 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <lucide-icon [img]="FileText" [size]="18"></lucide-icon>
+                </button>
+                <button class="hover:text-indigo-600 p-2 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <lucide-icon [img]="Share2" [size]="18"></lucide-icon>
+                </button>
+                <button class="hover:text-indigo-600 p-2 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <lucide-icon [img]="MoreHorizontal" [size]="18"></lucide-icon>
+                </button>
+                <div class="w-px h-6 bg-gray-200 mx-2"></div>
+                <button (click)="close.emit()"
+                    class="hover:bg-red-50 hover:text-red-500 p-2 rounded-lg text-gray-500 transition-colors">
+                    <lucide-icon [img]="X" [size]="20"></lucide-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- Panel Content -->
+        <div class="flex-1 overflow-y-auto px-8 py-8 scrollbar-thin scrollbar-thumb-gray-200">
+            <div class="flex justify-between items-start mb-6">
+                <h2 class="text-3xl font-extrabold text-gray-900 leading-tight">{{ task.title }}</h2>
+                <button class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                    <lucide-icon [img]="Trash2" [size]="18"></lucide-icon>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-[140px_1fr] gap-y-6 gap-x-4 mb-10 text-sm">
+                <div class="text-gray-400 flex items-center gap-2 font-medium">
+                    <div class="w-5 flex justify-center text-gray-300">
+                        <lucide-icon [img]="CheckCircle2" [size]="18"></lucide-icon>
+                    </div> Status
+                </div>
+                <div class="flex items-center gap-2 font-bold text-gray-800">
+                    <div
+                        [class]="'w-2.5 h-2.5 rounded-full ' + (task.status === 'Completed' ? 'bg-green-500' : 'bg-indigo-600')">
+                    </div> {{ task.status }}
+                </div>
+
+                <div class="text-gray-400 flex items-center gap-2 font-medium">
+                    <div class="w-5 flex justify-center text-gray-300">
+                        <lucide-icon [img]="Calendar" [size]="18"></lucide-icon>
+                    </div> Due date
+                </div>
+                <div
+                    class="font-bold text-gray-800 flex items-center gap-2 bg-gray-50 w-fit px-3 py-1 rounded-md border border-gray-100">
+                    {{ task.due_date || 'No due date' }}</div>
+
+                <div class="text-gray-400 flex items-center gap-2 font-medium">
+                    <div class="w-5 flex justify-center text-gray-300">
+                        <lucide-icon [img]="UserPlus" [size]="18"></lucide-icon>
+                    </div> Assignee
+                </div>
+                <div class="flex items-center gap-3">
+                    <div *ngFor="let user of task.assignees"
+                        class="flex items-center gap-2 bg-white pl-1 pr-3 py-1 rounded-full border border-gray-200 shadow-sm">
+                        <app-avatar [user]="user" size="w-6 h-6"></app-avatar>
+                        <span class="text-xs font-bold text-gray-700">{{ user.name }}</span>
+                    </div>
+                    <button
+                        class="text-xs font-bold text-gray-500 border border-dashed border-gray-300 px-3 py-1.5 rounded-full hover:border-indigo-500 hover:text-indigo-600 flex items-center gap-1 transition-all">
+                        <lucide-icon [img]="Plus" [size]="12"></lucide-icon> Invite
+                    </button>
+                </div>
+
+                <div class="text-gray-400 flex items-center gap-2 font-medium">
+                    <div class="w-5 flex justify-center text-gray-300">
+                        <lucide-icon [img]="LayoutGrid" [size]="18"></lucide-icon>
+                    </div> Tags
+                </div>
+                <div class="flex gap-2">
+                    <span *ngIf="!task.tags || task.tags.length === 0" class="text-sm text-gray-400">No tags</span>
+                    <span *ngFor="let tag of task.tags" class="px-3 py-1 rounded-lg text-xs font-semibold text-white"
+                        [style.background-color]="tag.color || '#6366f1'">
+                        {{ tag.name }}
+                    </span>
+                </div>
+
+                <div class="text-gray-400 flex items-center gap-2 self-start pt-1 font-medium">
+                    <div class="w-5 flex justify-center text-gray-300">
+                        <lucide-icon [img]="FileText" [size]="18"></lucide-icon>
+                    </div> Description
+                </div>
+                <div
+                    class="p-5 bg-gray-50 rounded-2xl border border-gray-100 text-gray-700 leading-relaxed text-[15px]">
+                    {{ task.description || 'No description provided.' }}
+                </div>
+            </div>
+
+            <!-- Attachments -->
+            <div *ngIf="task.attachments && task.attachments.length > 0" class="mb-10">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2 text-gray-900 font-bold text-sm">
+                        <lucide-icon [img]="Paperclip" [size]="18" class="text-gray-400"></lucide-icon> Attachment ({{
+                        task.attachments.length }})
+                    </div>
+                    <button (click)="downloadAllAttachments()"
+                        class="text-xs text-indigo-600 font-bold hover:underline flex items-center gap-1 bg-indigo-50 px-3 py-1.5 rounded-lg">
+                        <div class="rotate-180"><lucide-icon [img]="Share2" [size]="12"></lucide-icon></div> Download
+                        All
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div *ngFor="let file of task.attachments" (click)="handleDownloadAttachment(file, $event)"
+                        [class]="'flex items-center gap-3 p-4 rounded-xl border transition-all group cursor-pointer bg-white relative ' + (isAttachmentDownloaded(file.id) ? 'border-green-300 bg-green-50/30' : 'border-gray-200 hover:border-indigo-400 hover:shadow-md')">
+                        <div
+                            [class]="'w-12 h-12 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform ' + getFileTypeClass(file.name || file.filename)">
+                            <lucide-icon [img]="getFileTypeIcon(file.name || file.filename)" [size]="24"></lucide-icon>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 truncate">{{ file.name
+                                || file.filename }}</p>
+                            <p class="text-xs text-gray-400 font-medium">{{ file.size || file.byte_size || 'Unknown
+                                size' }} • <span
+                                    [class]="isAttachmentDownloaded(file.id) ? 'text-green-600 font-semibold' : 'hover:text-indigo-500 transition-colors'">{{
+                                    isAttachmentDownloaded(file.id) ? 'Downloaded ✓' : 'Download' }}</span></p>
+                        </div>
+                        <button (click)="handleDeleteAttachment(file, $event)"
+                            class="absolute top-2 right-2 p-1 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors opacity-0 group-hover:opacity-100">
+                            <lucide-icon [img]="Trash2" [size]="14"></lucide-icon>
+                        </button>
+                    </div>
+                    <button (click)="triggerFileUpload()"
+                        class="flex items-center justify-center h-[80px] rounded-xl border border-dashed border-gray-300 text-gray-400 hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-all">
+                        <div class="flex flex-col items-center gap-1">
+                            <lucide-icon [img]="Plus" [size]="24"></lucide-icon>
+                            <span class="text-xs font-semibold">Upload</span>
+                        </div>
+                    </button>
+                    <input type="file" id="fileUpload" (change)="handleFileUpload($event)" class="hidden" />
+                </div>
+            </div>
+
+            <!-- Dynamic Tabbed Section -->
+            <div>
+                <div class="flex items-center gap-6 border-b border-gray-200 mb-6">
+                    <button *ngFor="let tab of tabs" (click)="modalTab = tab"
+                        [class.border-indigo-600]="modalTab === tab" [class.text-gray-900]="modalTab === tab"
+                        [class.border-transparent]="modalTab !== tab" [class.text-gray-500]="modalTab !== tab"
+                        class="pb-3 text-sm font-medium border-b-2 transition-all relative hover:text-gray-700">
+                        {{ tab }}
+                        <span *ngIf="tab === 'Comments' && task.comments && task.comments.length > 0"
+                            class="ml-2 bg-indigo-100 text-indigo-700 text-[10px] px-2 py-0.5 rounded-full align-middle">{{
+                            task.comments.length }}</span>
+                        <span *ngIf="tab === 'Subtasks' && task.subtasks"
+                            class="ml-2 bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-full align-middle">{{
+                            getCompletedSubtasks() }}/{{ task.subtasks.length }}</span>
+                    </button>
+                </div>
+
+                <div class="min-h-[300px]">
+                    <!-- Subtasks Tab -->
+                    <div *ngIf="modalTab === 'Subtasks'" class="space-y-6 animate-in fade-in duration-300">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-gray-900">Task Progress</h3>
+                            <div class="flex items-center gap-2 text-gray-500 text-sm font-medium">
+                                <div *ngIf="task.subtasks && task.subtasks.length > 0"
+                                    [class]="'w-4 h-4 rounded-full border-2 ' + (getCompletedSubtasks() === task.subtasks.length ? 'border-green-500 bg-green-500' : 'border-indigo-600 border-t-transparent animate-spin')">
+                                </div>
+                                {{ getCompletedSubtasks() }}/{{ task.subtasks ? task.subtasks.length : 0 }}
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-600 transition-all duration-500 ease-out"
+                                [style.width.%]="getProgressPercentage()"></div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div *ngFor="let st of task.subtasks"
+                                [class]="'group relative p-3 rounded-lg border transition-all duration-200 ' + (st.completed ? 'bg-gray-50 border-gray-100' : 'bg-white border-gray-200 hover:border-indigo-300 hover:shadow-sm')">
+                                <div class="flex items-start gap-3">
+                                    <button (click)="handleToggleSubtask(st)"
+                                        [class]="'mt-0.5 transition-colors ' + (st.completed ? 'text-indigo-600' : 'text-gray-300 hover:text-indigo-400')">
+                                        <lucide-icon *ngIf="st.completed" [img]="CheckSquare" [size]="20"
+                                            class="fill-indigo-600 text-white"></lucide-icon>
+                                        <div *ngIf="!st.completed"
+                                            class="w-5 h-5 border-2 border-current rounded bg-white">
+                                        </div>
+                                    </button>
+
+                                    <div class="flex-1">
+                                        <div class="flex justify-between items-start">
+                                            <p
+                                                [class]="'text-sm font-medium transition-colors ' + (st.completed ? 'text-gray-400 line-through' : 'text-gray-800')">
+                                                {{ st.title || st.text }}
+                                            </p>
+                                        </div>
+
+                                        <div *ngIf="st.blocker_note"
+                                            class="mt-2 flex items-start gap-2 bg-red-50 p-2 rounded text-xs text-red-700 border border-red-100">
+                                            <lucide-icon [img]="AlertCircle" [size]="12"
+                                                class="mt-0.5 flex-shrink-0"></lucide-icon>
+                                            {{ st.blocker_note }}
+                                        </div>
+                                        <div *ngIf="st.note"
+                                            class="mt-2 bg-amber-50 p-2 rounded text-xs text-amber-800 border border-amber-100">
+                                            {{ st.note }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button (click)="handleAddSubtask()"
+                                class="w-full py-3 rounded-lg border border-dashed border-gray-300 text-gray-500 text-sm font-medium hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-all flex items-center justify-center gap-2">
+                                <lucide-icon [img]="Plus" [size]="16"></lucide-icon> Add Subtask
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Comments Tab -->
+                    <div *ngIf="modalTab === 'Comments'" class="flex flex-col h-full">
+                        <div class="flex-1 overflow-y-auto pr-2 space-y-6 min-h-[200px]">
+                            <div *ngIf="!task.comments || task.comments.length === 0"
+                                class="flex flex-col items-center justify-center h-40 text-gray-400 text-sm">
+                                <lucide-icon [img]="MessageSquare" [size]="32" class="mb-2 opacity-20"></lucide-icon>
+                                <p>No comments yet. Start the conversation!</p>
+                            </div>
+
+                            <div *ngFor="let comment of task.comments"
+                                [class]="'flex gap-4 ' + (comment.user_id === currentUserId ? 'flex-row-reverse' : '')">
+                                <app-avatar [user]="getUserById(comment.user_id)!" size="w-8 h-8"></app-avatar>
+                                <div [class]="'flex-1 ' + (comment.user_id === currentUserId ? 'text-right' : '')">
+                                    <div
+                                        [class]="'flex items-center gap-2 mb-1 ' + (comment.user_id === currentUserId ? 'justify-end' : '')">
+                                        <span class="font-bold text-sm text-gray-900">{{
+                                            getUserById(comment.user_id)?.name }}</span>
+                                        <span class="text-xs text-gray-400">{{ comment.created_at | date:'shortTime'
+                                            }}</span>
+                                    </div>
+                                    <div
+                                        [class]="'inline-block text-sm leading-relaxed p-3 rounded-2xl ' + (comment.user_id === currentUserId ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-gray-100 text-gray-700 rounded-tl-none')">
+                                        {{ comment.content || comment.text }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div #commentsEnd></div>
+                        </div>
+
+                        <!-- Input Area -->
+                        <div class="mt-4 pt-4 border-t border-gray-100 bg-white sticky bottom-0">
+                            <div
+                                class="bg-gray-50 p-2 rounded-xl border border-gray-200 flex items-center gap-2 focus-within:ring-2 focus-within:ring-indigo-100 focus-within:border-indigo-300 transition-all">
+                                <input type="text" [(ngModel)]="commentInput" (keydown)="onKeyDown($event)"
+                                    placeholder="Write a comment..."
+                                    class="flex-1 bg-transparent border-none focus:ring-0 text-sm px-2 text-gray-700 placeholder-gray-400 outline-none" />
+                                <button class="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                                    <lucide-icon [img]="Paperclip" [size]="18"></lucide-icon>
+                                </button>
+                                <button (click)="handleSendMessage()" [disabled]="!commentInput.trim()"
+                                    [class]="'px-4 py-2 rounded-lg text-sm font-medium transition-all ' + (commentInput.trim() ? 'bg-[#1C1D22] text-white hover:bg-black' : 'bg-gray-200 text-gray-400 cursor-not-allowed')">
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activities Tab -->
+                    <div *ngIf="modalTab === 'Activities'" class="space-y-6">
+                        <div class="relative pl-4 border-l-2 border-gray-100 space-y-8">
+                            <div *ngIf="activities.length === 0" class="text-gray-400 text-sm italic">
+                                No activities yet.
+                            </div>
+                            <div *ngFor="let activity of activities" class="relative">
+                                <div class="absolute -left-[21px] top-0 bg-white p-1">
+                                    <div class="w-2 h-2 rounded-full bg-gray-300 ring-4 ring-white"></div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <app-avatar
+                                        [user]="activity.user || { name: 'Unknown', initials: '??', color: 'bg-gray-400' }"
+                                        size="w-6 h-6"></app-avatar>
+                                    <div>
+                                        <p class="text-sm text-gray-600">
+                                            <span class="font-semibold text-gray-900">{{ activity.user?.first_name ||
+                                                'User' }}</span>
+                                            {{ getActivityDescription(activity).action }}
+                                            <span class="font-medium text-indigo-600">{{
+                                                getActivityDescription(activity).target }}</span>
+                                        </p>
+                                        <p class="text-xs text-gray-400 mt-1">{{ getActivityTime(activity.created_at) }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
