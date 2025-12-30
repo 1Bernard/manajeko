@@ -1,9 +1,10 @@
 import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, X, Calendar, Tag, AlignLeft, Paperclip, Users } from 'lucide-angular';
+import { LucideAngularModule, X, Calendar, Tag, AlignLeft, Paperclip, Users, Folder } from 'lucide-angular';
 import { TaskService } from '../../../core/services/task.service';
 import { WorkspaceService } from '../../../core/services/workspace.service';
+import { ProjectService } from '../../../core/services/project.service';
 import { FileUploaderComponent } from '../file-uploader/file-uploader.component';
 
 interface NewTaskData {
@@ -11,6 +12,7 @@ interface NewTaskData {
   description: string;
   priority: string;
   status: string;
+  startDate: string;
   dueDate: string;
   attachments: File[];
   tagIds: number[];
@@ -37,6 +39,28 @@ interface NewTaskData {
         <div class="flex-1 overflow-y-auto px-8 py-8">
           <form class="space-y-6">
             
+            <!-- Project Selector (Optional) -->
+            <div *ngIf="enableProjectSelection">
+              <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <lucide-icon [img]="Folder" [size]="16"></lucide-icon> Project *
+              </label>
+              <div class="relative">
+                <select 
+                  [ngModel]="projectId"
+                  (ngModelChange)="onProjectChange($event)"
+                  name="project"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none bg-white"
+                  [disabled]="isLoadingProjects"
+                >
+                  <option [ngValue]="null" disabled>Select a project...</option>
+                  <option *ngFor="let p of projects" [ngValue]="p.id">{{ p.attributes.name }}</option>
+                </select>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
+            </div>
+
             <!-- Task Name -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">Task Name *</label>
@@ -63,8 +87,6 @@ interface NewTaskData {
                 class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none"
               ></textarea>
             </div>
-
-
 
             <!-- Priority -->
             <div>
@@ -105,17 +127,33 @@ interface NewTaskData {
               </div>
             </div>
 
-            <!-- Due Date -->
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                <lucide-icon [img]="Calendar" [size]="16"></lucide-icon> Due Date
-              </label>
-              <input 
-                type="date" 
-                [(ngModel)]="taskData.dueDate"
-                name="dueDate"
-                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
-              />
+            <!-- Dates Group -->
+            <div class="grid grid-cols-2 gap-4">
+               <!-- Start Date -->
+               <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                  <lucide-icon [img]="Calendar" [size]="16"></lucide-icon> Start Date
+                </label>
+                <input 
+                  type="date" 
+                  [(ngModel)]="taskData.startDate"
+                  name="startDate"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-sans text-sm"
+                />
+              </div>
+
+              <!-- Due Date -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                  <lucide-icon [img]="Calendar" [size]="16"></lucide-icon> Due Date
+                </label>
+                <input 
+                  type="date" 
+                  [(ngModel)]="taskData.dueDate"
+                  name="dueDate"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-sans text-sm"
+                />
+              </div>
             </div>
 
             <!-- Tags -->
@@ -218,8 +256,10 @@ interface NewTaskData {
 export class CreateTaskModalComponent implements OnInit {
   @Input() projectId!: number;
   @Input() workspaceId!: string;
+  @Input() initialDate: string | null = null;
+  @Input() enableProjectSelection = false;
   @Output() close = new EventEmitter<void>();
-  @Output() taskCreated = new EventEmitter<NewTaskData>();
+  @Output() taskCreated = new EventEmitter<any>();
 
   readonly X = X;
   readonly Calendar = Calendar;
@@ -227,12 +267,14 @@ export class CreateTaskModalComponent implements OnInit {
   readonly AlignLeft = AlignLeft;
   readonly Paperclip = Paperclip;
   readonly Users = Users;
+  readonly Folder = Folder;
 
   taskData: NewTaskData = {
     title: '',
     description: '',
     priority: 'Medium',
     status: 'todo',
+    startDate: '',
     dueDate: '',
     attachments: [],
     tagIds: [],
@@ -241,12 +283,15 @@ export class CreateTaskModalComponent implements OnInit {
 
   availableTags: any[] = [];
   availableMembers: any[] = [];
+  projects: any[] = [];
   isLoadingTags = false;
   isLoadingMembers = false;
+  isLoadingProjects = false;
 
   constructor(
     private taskService: TaskService,
-    private workspaceService: WorkspaceService
+    private workspaceService: WorkspaceService,
+    private projectService: ProjectService
   ) { }
 
   ngOnInit(): void {
@@ -254,6 +299,46 @@ export class CreateTaskModalComponent implements OnInit {
       this.loadTags();
     }
     if (this.workspaceId) {
+      this.loadMembers();
+    }
+    
+    if (this.initialDate) {
+        this.taskData.startDate = this.initialDate;
+        this.taskData.dueDate = this.initialDate;
+    }
+
+    if (this.enableProjectSelection) {
+      this.loadProjects();
+    }
+  }
+
+  loadProjects() {
+    this.isLoadingProjects = true;
+    this.projectService.projects$.subscribe({
+      next: (projects) => {
+        this.projects = projects;
+        this.isLoadingProjects = false;
+      },
+      error: (err) => {
+        console.error('Error loading projects:', err);
+        this.isLoadingProjects = false;
+      }
+    });
+  }
+
+  onProjectChange(newProjectId: number) {
+    if (!newProjectId) return;
+    
+    this.projectId = newProjectId;
+    // Find workspace ID for this project
+    const project = this.projects.find(p => p.id == newProjectId);
+    if (project) {
+      this.workspaceId = project.attributes.workspace_id;
+      // Reset selections
+      this.taskData.tagIds = [];
+      this.taskData.assigneeIds = [];
+      // Reload dependencies
+      this.loadTags();
       this.loadMembers();
     }
   }
@@ -280,11 +365,13 @@ export class CreateTaskModalComponent implements OnInit {
     this.isLoadingMembers = true;
     this.workspaceService.getMembers(this.workspaceId).subscribe({
       next: (members) => {
+        console.log('API Members Response:', members); // Debug log
         this.availableMembers = members.map((member: any) => ({
           id: member.id,
           name: member.attributes?.full_name || member.full_name || member.email,
           email: member.attributes?.email || member.email
         }));
+        console.log('Mapped Available Members:', this.availableMembers); // Debug log
         this.isLoadingMembers = false;
       },
       error: (err) => {
@@ -318,10 +405,38 @@ export class CreateTaskModalComponent implements OnInit {
     }
   }
 
-  handleSubmit(): void {
-    if (!this.taskData.title.trim()) return;
+  isSubmitting = false;
 
-    this.taskCreated.emit(this.taskData);
-    this.close.emit();
+  handleSubmit(): void {
+    if (!this.taskData.title.trim() || this.isSubmitting || !this.projectId) return;
+
+    this.isSubmitting = true;
+
+    // Map the form data to the DTO expected by the service
+    const taskDto: any = {
+      title: this.taskData.title,
+      description: this.taskData.description,
+      status: this.taskData.status,
+      priority: this.taskData.priority,
+      start_date: this.taskData.startDate,
+      due_date: this.taskData.dueDate,
+      assignee_ids: this.taskData.assigneeIds,
+      tag_ids: this.taskData.tagIds,
+      attachments: this.taskData.attachments
+    };
+    console.log('Submitting task DTO:', taskDto);
+
+    this.taskService.createTask(this.projectId, taskDto).subscribe({
+      next: (createdTask) => {
+        this.taskCreated.emit(createdTask); // Emit the actual created task
+        this.isSubmitting = false;
+        this.close.emit();
+      },
+      error: (err) => {
+        console.error('Error creating task:', err);
+        this.isSubmitting = false;
+        // You might want to show an error message here
+      }
+    });
   }
 }

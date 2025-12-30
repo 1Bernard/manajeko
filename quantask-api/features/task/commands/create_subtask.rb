@@ -14,13 +14,14 @@ module Task
         member = Workspace::WorkspaceMember.find_by(user: @user, workspace_id: task.project.workspace_id)
         return Result.failure('Unauthorized', status: :forbidden) unless member
 
-        subtask = Task::Subtask.new(@params)
-
+        subtask = ::Task::Subtask.new(@params)
+        
         # Set default position
-        last_position = Task::Subtask.where(task_id: task.id).maximum(:position) || 0
+        last_position = ::Task::Subtask.where(task_id: task.id).maximum(:position) || 0
         subtask.position = last_position + 1000
 
         if subtask.save
+          ::Task::Services::ActivityService.create_activity(@user, task.id, 'subtask_added', { title: subtask.title })
           Result.success(subtask, status: :created)
         else
           Result.failure('Validation failed', status: :unprocessable_entity, details: subtask.errors.as_json)

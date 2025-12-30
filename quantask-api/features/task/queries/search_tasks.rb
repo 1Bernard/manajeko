@@ -8,14 +8,22 @@ module Task
       end
 
       def call
-        # Verify access
-        project = Project::Project.find_by(id: @project_id)
-        return [] unless project
+        # Base scope
+        if @project_id
+          # Scoped to specific project
+          project = Project::Project.find_by(id: @project_id)
+          return [] unless project
 
-        member = Workspace::WorkspaceMember.find_by(user: @user, workspace_id: project.workspace_id)
-        return [] unless member
+          member = Workspace::WorkspaceMember.find_by(user: @user, workspace_id: project.workspace_id)
+          return [] unless member
 
-        tasks = ::Task::Task.where(project_id: @project_id)
+          tasks = ::Task::Task.where(project_id: @project_id)
+        else
+          # Global scope: tasks from all projects in user's workspaces
+          workspace_ids = @user.workspaces.pluck(:id)
+          project_ids = Project::Project.where(workspace_id: workspace_ids).pluck(:id)
+          tasks = ::Task::Task.where(project_id: project_ids)
+        end
 
         # Text search
         if @filters[:q].present?

@@ -24,7 +24,8 @@ module Global
             </div>
           "
 
-          EmailService.send_email(
+          # Use the centralized SendEmail command
+          Global::Commands::SendEmail.call(
             to: @user.email,
             subject: subject,
             content: content

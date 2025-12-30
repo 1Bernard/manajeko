@@ -3,6 +3,8 @@ module Identity
     self.table_name = 'users'
     has_secure_password
 
+    has_one_attached :avatar
+
     has_many :owned_workspaces, class_name: '::Workspace::Workspace', foreign_key: 'owner_id', dependent: :destroy
     has_many :workspace_members, class_name: '::Workspace::WorkspaceMember', dependent: :destroy
     has_many :workspaces, through: :workspace_members, class_name: '::Workspace::Workspace'
@@ -21,7 +23,8 @@ module Identity
     enum :otp_method, { email: 'email', sms: 'sms' }
 
     def valid_otp?(code)
-      otp_code == code && otp_expires_at > Time.current
+      return false if otp_code.blank? || otp_expires_at.blank?
+      otp_code.to_s.strip == code.to_s.strip && otp_expires_at > Time.current
     end
 
     def clear_otp!

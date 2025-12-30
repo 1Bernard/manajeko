@@ -99,7 +99,18 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
                             [class.bg-indigo-50]="selectedIndex === getUserIndex(i)"
                             class="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0">
                             <div class="flex items-start gap-3">
-                                <lucide-icon [img]="User" [size]="16" class="text-gray-400 mt-0.5"></lucide-icon>
+                                <!-- Avatar Logic -->
+                                <img *ngIf="user.attributes.avatar_url; else searchInitials" 
+                                     [src]="user.attributes.avatar_url" 
+                                     class="w-8 h-8 rounded-full object-cover border border-gray-200" 
+                                />
+                                <ng-template #searchInitials>
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-gray-700 border border-gray-100" 
+                                         [style.background-color]="getAvatarColor(user.attributes.name)">
+                                        {{ getInitials(user.attributes.name) }}
+                                    </div>
+                                </ng-template>
+
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900">{{ user.attributes.name }}</p>
                                     <p class="text-xs text-gray-500 truncate mt-0.5">{{ user.attributes.email }}</p>
@@ -248,5 +259,25 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
         this.closeResults();
         this.clearSearch();
         this.close.emit();
+    }
+
+    getAvatarColor(name: string): string {
+        const colors = ['#E0E7FF', '#D1FAE5', '#FEF3C7', '#FCE7F3', '#E0F2FE', '#FFEDD5']; // Pastel backgrounds
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) {
+            hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash) % colors.length;
+        return colors[index];
+    }
+
+    getInitials(name: string): string {
+        if (!name) return 'U';
+        return name
+            .split(' ')
+            .map(n => n[0])
+            .slice(0, 2)
+            .join('')
+            .toUpperCase();
     }
 }

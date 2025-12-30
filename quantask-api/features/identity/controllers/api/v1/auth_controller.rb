@@ -4,7 +4,7 @@ module Identity
       module V1
         class AuthController < ::Api::V1::BaseController
 
-          skip_before_action :authenticate_request, only: [:register, :login, :verify_otp, :forgot_password, :reset_password]
+          skip_before_action :authenticate_request, only: [:register, :login, :verify_otp, :resend_otp, :forgot_password, :reset_password]
 
           def register
             result = Identity::Services::RegistrationService.call(register_params)
@@ -21,6 +21,11 @@ module Identity
             render_result(result)
           end
 
+          def resend_otp
+            result = Identity::Services::ResendOtpService.call(params[:email])
+            render_command(result)
+          end
+
           def forgot_password
             result = Identity::Services::RecoveryService.forgot_password(params[:email])
             render_command(result)
@@ -33,6 +38,14 @@ module Identity
 
           def me
             render json: ::Identity::Api::V1::UserSerializer.new(@current_user).serializable_hash
+          end
+
+          def update_profile
+            if @current_user.update(update_params)
+              render json: ::Identity::Api::V1::UserSerializer.new(@current_user).serializable_hash
+            else
+              render json: { error: @current_user.errors.full_messages }, status: :unprocessable_entity
+            end
           end
 
           private
@@ -52,6 +65,11 @@ module Identity
 
           def register_params
             params.permit(:email, :password, :password_confirmation, :first_name, :last_name, :phone_number, :otp_method)
+          end
+
+          def update_params
+            # Allow updating basic info and avatar
+            params.permit(:first_name, :last_name, :job_title, :bio, :location, :avatar)
           end
         end
       end

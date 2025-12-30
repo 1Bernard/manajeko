@@ -5,10 +5,10 @@ import { WorkspaceService } from '../../../../core/services/workspace.service';
 import { CreateProjectModalComponent } from '../../components/create-project-modal/create-project-modal.component';
 
 @Component({
-    selector: 'app-project-list',
-    standalone: true,
-    imports: [CommonModule, CreateProjectModalComponent],
-    template: `
+  selector: 'app-project-list',
+  standalone: true,
+  imports: [CommonModule, CreateProjectModalComponent],
+  template: `
     <div class="bg-white shadow sm:rounded-lg">
       <div class="px-4 py-5 sm:p-6">
         <div class="sm:flex sm:items-center">
@@ -61,7 +61,7 @@ import { CreateProjectModalComponent } from '../../components/create-project-mod
                       </span>
                     </td>
                     <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500">{{ project.attributes.visibility }}</td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500">{{ project.attributes.ownerName }}</td>
+                    <td class="p-4 text-sm text-slate-500">{{ project.attributes.owner_name }}</td>
                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                       <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                     </td>
@@ -82,24 +82,24 @@ import { CreateProjectModalComponent } from '../../components/create-project-mod
   `
 })
 export class ProjectListComponent {
-    showCreateModal = false;
+  showCreateModal = false;
 
-    constructor(
-        public projectService: ProjectService,
-        private workspaceService: WorkspaceService
-    ) { }
+  constructor(
+    public projectService: ProjectService,
+    private workspaceService: WorkspaceService
+  ) { }
 
-    onCreateProject(data: { name: string; description: string; visibility: string }) {
-        const workspaceId = this.workspaceService.getCurrentWorkspaceId();
-        if (workspaceId) {
-            this.projectService.createProject(workspaceId, data).subscribe({
-                next: () => {
-                    this.showCreateModal = false;
-                },
-                error: (error) => {
-                    console.error('Failed to create project', error);
-                }
-            });
+  onCreateProject(data: { name: string; description: string; visibility: string }) {
+    const workspaceId = this.workspaceService.getCurrentWorkspaceId();
+    if (workspaceId) {
+      this.projectService.createProject(workspaceId, data).subscribe({
+        next: () => {
+          this.showCreateModal = false;
+        },
+        error: (error) => {
+          console.error('Failed to create project', error);
         }
+      });
     }
+  }
 }

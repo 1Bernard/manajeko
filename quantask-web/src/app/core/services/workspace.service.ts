@@ -37,9 +37,17 @@ export class WorkspaceService {
                 map(response => response.data),
                 tap(workspaces => {
                     this.workspacesSubject.next(workspaces);
-                    // Set first workspace as default if none selected
-                    if (workspaces.length > 0 && !this.currentWorkspaceSubject.value) {
-                        this.setCurrentWorkspace(workspaces[0]);
+
+                    if (workspaces.length > 0) {
+                        const storedId = localStorage.getItem('currentWorkspaceId');
+                        const storedWorkspace = workspaces.find(w => w.id === storedId);
+
+                        if (storedWorkspace) {
+                            this.setCurrentWorkspace(storedWorkspace);
+                        } else {
+                            // If stored ID is invalid or missing, default to first workspace
+                            this.setCurrentWorkspace(workspaces[0]);
+                        }
                     }
                 })
             )

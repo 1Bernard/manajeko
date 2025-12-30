@@ -9,7 +9,7 @@ module Workspace
       end
 
       def call
-        workspace = Workspace::Workspace.new(@params)
+        workspace = ::Workspace::Workspace.new(@params)
         workspace.owner = @user
 
         ActiveRecord::Base.transaction do

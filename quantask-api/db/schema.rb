@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_29_083537) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_15_111625) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -168,6 +168,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_29_083537) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "task_type", default: "task"
+    t.datetime "start_date"
     t.index ["assignee_id"], name: "index_tasks_on_assignee_id"
     t.index ["creator_id"], name: "index_tasks_on_creator_id"
     t.index ["position"], name: "index_tasks_on_position"
@@ -193,6 +194,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_29_083537) do
     t.jsonb "preferences", default: {}
     t.string "avatar_url"
     t.string "job_title"
+    t.text "bio"
+    t.string "location"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["preferences"], name: "index_users_on_preferences", using: :gin
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

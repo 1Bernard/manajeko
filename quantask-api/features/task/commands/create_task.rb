@@ -8,11 +8,11 @@ module Task
 
       def call
         # Verify user has access to project
-        project = Project::Project.find_by(id: @params[:project_id].to_i)
+        project = ::Project::Project.find_by(id: @params[:project_id].to_i)
         return Result.failure('Project not found', status: :not_found) unless project
 
         # Check workspace membership
-        member = Workspace::WorkspaceMember.find_by(user: @user, workspace_id: project.workspace_id)
+        member = ::Workspace::WorkspaceMember.find_by(user: @user, workspace_id: project.workspace_id)
         return Result.failure('Unauthorized', status: :forbidden) unless member
 
         # Normalize status and priority to lowercase/snake_case
@@ -49,6 +49,17 @@ module Task
               attachment.file.attach(file)
               attachment.save
             end
+          end
+
+          # Notify assignees
+          task.assignee_ids.each do |user_id|
+             user = ::Identity::User.find(user_id)
+             Communication::Services::NotificationService.create_notification(
+               user: user,
+               type: 'task_assigned',
+               content: "You were assigned to task: #{task.title}",
+               notifiable: task
+             )
           end
 
           Result.success(task, status: :created)

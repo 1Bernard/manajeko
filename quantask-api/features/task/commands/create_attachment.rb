@@ -15,10 +15,11 @@ module Task
         member = Workspace::WorkspaceMember.find_by(user: @user, workspace_id: task.project.workspace_id)
         return Result.failure('Unauthorized', status: :forbidden) unless member
 
-        attachment = Task::Attachment.new(task: task, user: @user)
+        attachment = ::Task::Attachment.new(task: task, user: @user)
         attachment.file.attach(@file)
 
         if attachment.save
+          ::Task::Services::ActivityService.create_activity(@user, task.id, 'attachment_added', { filename: attachment.file.filename.to_s })
           Result.success(attachment, status: :created)
         else
           Result.failure('Validation failed', status: :unprocessable_entity, details: attachment.errors.as_json)

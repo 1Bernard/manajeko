@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface Comment {
@@ -31,7 +31,18 @@ export class CommentService {
 
     // Create comment
     createComment(taskId: number, content: string): Observable<Comment> {
-        return this.http.post<Comment>(`${this.apiUrl}/tasks/${taskId}/comments`, { content });
+        return this.http.post<any>(`${this.apiUrl}/tasks/${taskId}/comments`, { content }).pipe(
+            map(response => {
+                const data = response.data || response;
+                if (data && data.attributes) {
+                    return {
+                        id: parseInt(data.id),
+                        ...data.attributes
+                    };
+                }
+                return data;
+            })
+        );
     }
 
     // Delete comment

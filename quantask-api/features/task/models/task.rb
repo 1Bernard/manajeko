@@ -14,11 +14,28 @@ module Task
     has_many :task_assignments, class_name: '::Task::TaskAssignment', dependent: :destroy
     has_many :assignees, through: :task_assignments, source: :user, class_name: '::Identity::User'
 
+    validate :due_date_cannot_be_in_the_past, if: -> { due_date.present? && due_date_changed? }
+    validate :start_date_cannot_be_after_due_date, if: -> { start_date.present? && due_date.present? }
+
     validates :title, presence: true
     validates :status, presence: true
     validates :priority, presence: true
     validates :task_type, presence: true
     validates :priority, presence: true, inclusion: { in: %w[low medium high urgent] }
+
+    private
+
+    def due_date_cannot_be_in_the_past
+      if due_date < Time.current
+        errors.add(:due_date, "can't be in the past")
+      end
+    end
+
+    def start_date_cannot_be_after_due_date
+      if start_date > due_date
+        errors.add(:start_date, "must be before due date")
+      end
+    end
 
     # Scopes
     scope :by_status, ->(status) { where(status: status) }

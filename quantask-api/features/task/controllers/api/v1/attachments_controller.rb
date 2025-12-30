@@ -4,22 +4,21 @@ module Task
       module V1
         class AttachmentsController < ::Api::V1::BaseController
           def create
-            # Merge task_id from route params into attachment params
-            result = Task::Commands::CreateAttachment.call(current_user, params[:task_id], params[:file])
-            render_command(result, serializer: Task::Api::V1::AttachmentSerializer, status: :created)
+            result = ::Task::Services::AttachmentService.create(current_user, params[:task_id], params[:file])
+            render_command(result, serializer: ::Task::Api::V1::AttachmentSerializer, status: :created)
           end
 
           def destroy
-            result = Task::Commands::DeleteAttachment.call(current_user, params[:id])
+            result = ::Task::Services::AttachmentService.delete(current_user, params[:id])
             render_command(result, status: :no_content)
           end
 
           def download
-            attachment = Task::Attachment.find_by(id: params[:id])
-            if attachment
-              redirect_to rails_blob_url(attachment.file, disposition: "attachment")
+            result = ::Task::Services::AttachmentService.download(current_user, params[:id])
+            if result.success?
+              redirect_to rails_blob_url(result.value.file, disposition: "attachment")
             else
-              render_error('Attachment not found', :not_found)
+              render_error(result.error, result.status)
             end
           end
         end

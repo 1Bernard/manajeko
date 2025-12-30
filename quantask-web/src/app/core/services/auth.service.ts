@@ -13,10 +13,13 @@ export interface User {
     otpMethod: string;
     createdAt: string;
     avatar?: string;
+    avatar_url?: string; // Add avatar_url to match backend response
     role?: string;
     location?: string;
     bio?: string;
     phone?: string;
+    job_title?: string; // Add job_title
+    phoneNumber?: string; // Add phoneNumber to match register logic
 }
 
 export interface AuthResponse {
@@ -144,5 +147,31 @@ export class AuthService {
 
     isAuthenticated(): boolean {
         return !!this.getToken();
+    }
+
+    updateProfile(data: { 
+        first_name: string; 
+        last_name: string; 
+        job_title?: string;
+        bio?: string;
+        location?: string;
+        avatar?: File 
+    }): Observable<User> {
+        const formData = new FormData();
+        formData.append('first_name', data.first_name);
+        formData.append('last_name', data.last_name);
+        if (data.job_title) formData.append('job_title', data.job_title);
+        if (data.bio) formData.append('bio', data.bio);
+        if (data.location) formData.append('location', data.location);
+        if (data.avatar) formData.append('avatar', data.avatar);
+
+        return this.http.patch<{ data: { attributes: User } }>(`${environment.apiUrl}/auth/me`, formData).pipe(
+            tap(response => {
+               if (response.data?.attributes) {
+                   this.currentUserSubject.next(response.data.attributes);
+               }
+            }),
+            map(response => response.data.attributes)
+        );
     }
 }

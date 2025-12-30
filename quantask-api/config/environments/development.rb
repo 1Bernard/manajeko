@@ -41,6 +41,9 @@ Rails.application.configure do
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
+  # Ensure ActiveStorage and ActionMailer know the host for generating URLs
+  config.action_controller.default_url_options = { host: 'localhost', port: 3001 }
+
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 

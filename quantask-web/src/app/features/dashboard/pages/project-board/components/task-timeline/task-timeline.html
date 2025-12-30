@@ -1,0 +1,56 @@
+<div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-280px)]">
+
+    <!-- Header (Months/Years - Optional, usually simple Day header is enough for MVP) -->
+
+    <!-- Timeline Scroll Area -->
+    <div class="overflow-x-auto overflow-y-auto flex-1 timeline-container relative" #scrollContainer>
+        <div class="relative min-h-full" [style.width.px]="days.length * dayWidth">
+
+            <!-- Dates Header -->
+            <div class="flex border-b border-gray-200 sticky top-0 bg-gray-50 z-30 h-[50px]">
+                <div *ngFor="let day of days"
+                    class="flex-shrink-0 border-r border-gray-100 flex flex-col items-center justify-center text-xs font-medium text-gray-500"
+                    [style.width.px]="dayWidth" [class.bg-indigo-50]="isToday(day)"
+                    [class.text-indigo-600]="isToday(day)">
+                    <span class="opacity-50 text-[10px] uppercase tracking-wide">{{ day | date:'EEE' }}</span>
+                    <span class="font-bold text-sm">{{ day | date:'d' }}</span>
+                </div>
+            </div>
+
+            <!-- Grid Background -->
+            <div class="absolute inset-0 flex pointer-events-none pt-[50px]">
+                <div *ngFor="let day of days" class="flex-shrink-0 border-r border-gray-100 h-full"
+                    [style.width.px]="dayWidth" [class.bg-indigo-50_05]="isToday(day)">
+                </div>
+            </div>
+
+            <!-- Today Line -->
+            <!-- <div class="absolute top-[50px] bottom-0 w-px bg-red-400 z-20 pointer-events-none shadow-[0_0_8px_rgba(248,113,113,0.4)]"
+                 style="left: calc(...);"></div> -->
+
+            <!-- Tasks Rows -->
+            <div class="py-4 relative z-10 space-y-4"> <!-- Add vertical spacing -->
+                <div *ngFor="let bar of taskBars"
+                    class="relative hover:bg-gray-50/50 transition-colors py-1 group h-[40px]">
+                    <!-- Row Hover Highlight (full width of timeline) -->
+
+                    <!-- The Bar -->
+                    <div class="absolute h-9 rounded-lg shadow-sm border border-white/20 cursor-pointer flex items-center px-3 gap-2 timeline-bar overflow-hidden"
+                        [style.left.px]="bar.left" [style.width.px]="bar.width" [ngClass]="bar.colorClass"
+                        (click)="onTaskClick(bar.task)">
+
+                        <!-- Content inside bar -->
+                        <span class="text-white text-xs font-bold whitespace-nowrap truncate">{{ bar.task.title
+                            }}</span>
+
+                        <!-- Avatar (only if wide enough) -->
+                        <div *ngIf="bar.width > 80 && bar.task.assignees?.length > 0" class="flex -space-x-1 ml-auto">
+                            <app-avatar *ngFor="let u of bar.task.assignees.slice(0, 2)" [user]="u" size="w-5 h-5"
+                                border="border border-white"></app-avatar>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

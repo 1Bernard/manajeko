@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'localhost:4200', '127.0.0.1:4200' # Angular dev server
+    origins 'localhost:4200', '127.0.0.1:4200', 'localhost:3001', '127.0.0.1:3001' # Angular dev server & Swagger UI
 
     resource '*',
       headers: :any,

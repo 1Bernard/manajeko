@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface Activity {
@@ -29,6 +29,17 @@ export class ActivityService {
 
     // Get activities for a task
     getActivities(taskId: number): Observable<Activity[]> {
-        return this.http.get<Activity[]>(`${this.apiUrl}/tasks/${taskId}/activities`);
+        return this.http.get<any>(`${this.apiUrl}/tasks/${taskId}/activities`).pipe(
+            map(response => {
+                const data = response.data || response;
+                if (Array.isArray(data)) {
+                    return data.map((item: any) => ({
+                        id: parseInt(item.id),
+                        ...item.attributes
+                    }));
+                }
+                return data || [];
+            })
+        );
     }
 }

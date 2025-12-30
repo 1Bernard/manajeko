@@ -1,1 +1,49 @@
-/* Empty CSS file - all styles are in Tailwind classes */
+/* Custom Scrollbar for Kanban */
+.overflow-x-auto::-webkit-scrollbar {
+    height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.3);
+    border-radius: 20px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.5);
+}
+
+/* Drag and Drop Styles */
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    background-color: white;
+    cursor: grabbing;
+}
+
+.cdk-drag-placeholder {
+    opacity: 0.3;
+    background: #f3f4f6;
+    border: 2px dashed #d1d5db;
+    border-radius: 1rem;
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .cdk-drag {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cursor-grab {
+    cursor: grab;
+}
+
+.active\:cursor-grabbing:active {
+    cursor: grabbing;
+}

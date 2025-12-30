@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -12,16 +14,27 @@ Rails.application.routes.draw do
       post 'auth/register', controller: '/identity/controllers/api/v1/auth', action: :register
       post 'auth/login', controller: '/identity/controllers/api/v1/auth', action: :login
       post 'auth/verify-otp', controller: '/identity/controllers/api/v1/auth', action: :verify_otp
+      post 'auth/resend-otp', controller: '/identity/controllers/api/v1/auth', action: :resend_otp
       post 'auth/forgot-password', controller: '/identity/controllers/api/v1/auth', action: :forgot_password
       post 'auth/reset-password', controller: '/identity/controllers/api/v1/auth', action: :reset_password
       get 'auth/me', controller: '/identity/controllers/api/v1/auth', action: :me
+      patch 'auth/me', controller: '/identity/controllers/api/v1/auth', action: :update_profile
 
       # Global Search
       get 'search', to: 'search#index'
 
+      # Notifications
+      resources :notifications, controller: '/communication/controllers/api/v1/notifications', only: [:index] do
+        member do
+          patch :mark_read
+        end
+        collection do
+          patch :mark_all_read
+        end
+      end
+
       # Analytics - Intelligence::Controllers::Api::V1::AnalyticsController
-      get 'analytics/task-stats', controller: '/intelligence/controllers/api/v1/analytics', action: :task_stats
-      get 'analytics/recent-activities', controller: '/intelligence/controllers/api/v1/analytics', action: :recent_activities
+      get 'analytics/dashboard', controller: '/intelligence/controllers/api/v1/analytics', action: :dashboard
 
 
       # Workspaces - Workspace::Controllers::Api::V1::WorkspacesController
@@ -38,13 +51,14 @@ Rails.application.routes.draw do
       end
 
       # Tasks - Task::Controllers::Api::V1::TasksController
-      resources :tasks, only: [:show, :update, :destroy], controller: '/task/controllers/api/v1/tasks' do
+      resources :tasks, only: [:index, :show, :update, :destroy], controller: '/task/controllers/api/v1/tasks' do
         member do
           patch :move
         end
         resources :subtasks, only: [:create], controller: '/task/controllers/api/v1/subtasks'
         resources :comments, only: [:index, :create], controller: '/task/controllers/api/v1/comments'
         resources :attachments, only: [:create], controller: '/task/controllers/api/v1/attachments'
+        resources :activities, only: [:index], controller: '/task/controllers/api/v1/activities'
       end
 
       # Subtasks - Task::Controllers::Api::V1::SubtasksController

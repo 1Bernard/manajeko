@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface Subtask {
@@ -41,12 +41,34 @@ export class SubtaskService {
 
     // Create subtask
     createSubtask(taskId: number, subtask: CreateSubtaskDto): Observable<Subtask> {
-        return this.http.post<Subtask>(`${this.apiUrl}/tasks/${taskId}/subtasks`, { subtask });
+        return this.http.post<any>(`${this.apiUrl}/tasks/${taskId}/subtasks`, { subtask }).pipe(
+            map(response => {
+                const data = response.data || response; // Handle potential unwrapped response
+                if (data && data.attributes) {
+                    return {
+                        id: parseInt(data.id),
+                        ...data.attributes
+                    };
+                }
+                return data;
+            })
+        );
     }
 
     // Update subtask
     updateSubtask(id: number, subtask: UpdateSubtaskDto): Observable<Subtask> {
-        return this.http.patch<Subtask>(`${this.apiUrl}/subtasks/${id}`, { subtask });
+        return this.http.patch<any>(`${this.apiUrl}/subtasks/${id}`, { subtask }).pipe(
+            map(response => {
+                const data = response.data || response;
+                if (data && data.attributes) {
+                    return {
+                        id: parseInt(data.id),
+                        ...data.attributes
+                    };
+                }
+                return data;
+            })
+        );
     }
 
     // Delete subtask

@@ -14,10 +14,10 @@ export interface Project {
         visibility: string;
         color?: string;
         icon?: string;
-        bannerImageUrl?: string;
-        ownerName?: string;
-        workspaceId?: number;
-        createdAt: string;
+        banner_image_url?: string;
+        owner_name?: string;
+        workspace_id?: number;
+        created_at: string;
     };
 }
 

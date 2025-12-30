@@ -7,8 +7,21 @@ module Project
       end
 
       def call
+        # Find workspace
+        workspace = ::Workspace::Workspace.find_by(id: @params[:workspace_id] || @params['workspace_id'])
+        return Result.failure('Workspace not found', status: :not_found) unless workspace
+
+        # Verify user has access to workspace
+        unless workspace.members.exists?(user: @user)
+          return Result.failure('Unauthorized', status: :forbidden)
+        end
+
+        # Create project with defaults
         defaults = { 'status' => 'active', 'visibility' => 'private' }
-        project = ::Project::Project.new(defaults.merge(@params))
+        project_params = defaults.merge(@params.except(:workspace_id, 'workspace_id'))
+        
+        project = ::Project::Project.new(project_params)
+        project.workspace = workspace
         project.owner = @user
 
         if project.save

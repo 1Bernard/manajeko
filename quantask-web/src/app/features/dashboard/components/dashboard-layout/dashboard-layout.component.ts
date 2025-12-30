@@ -14,14 +14,15 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { ProjectService, Project } from '../../../../core/services/project.service';
 import { WorkspaceService } from '../../../../core/services/workspace.service';
 import { Observable, map } from 'rxjs';
+import { NotificationDropdownComponent } from '../../../../shared/components/notification-dropdown/notification-dropdown.component';
+import { NotificationApiService } from '../../../../core/services/notification-api.service';
 import { GlobalSearchComponent } from '../../../../shared/components/global-search/global-search.component';
-
 import { CreateProjectModalComponent } from '../../../../shared/components/create-project-modal/create-project-modal.component';
 
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule, GlobalSearchComponent, CreateProjectModalComponent],
+  imports: [CommonModule, RouterModule, LucideAngularModule, GlobalSearchComponent, CreateProjectModalComponent, NotificationDropdownComponent],
   template: `
     <div class="flex h-screen bg-[#F8F9FB] font-sans text-slate-800 overflow-hidden">
       
@@ -133,11 +134,21 @@ import { CreateProjectModalComponent } from '../../../../shared/components/creat
 
           <div class="flex items-center gap-6">
              <button (click)="router.navigate(['/dashboard/profile'])" class="flex items-center gap-2 text-gray-500 hover:text-indigo-600 text-sm font-medium px-4 py-2 hover:bg-indigo-50 rounded-xl transition-all group">
-                 <img [src]="(authService.currentUser$ | async)?.avatar || 'https://i.pravatar.cc/150?u=1'" alt="Profile" class="w-6 h-6 rounded-full border border-gray-200"/> 
+                 <img [src]="(authService.currentUser$ | async)?.avatar_url || 'https://i.pravatar.cc/150?u=1'" alt="Profile" class="w-6 h-6 rounded-full border border-gray-200"/> 
                  <span>{{ (authService.currentUser$ | async)?.firstName }}</span>
              </button>
              <div class="h-6 w-px bg-gray-100"></div>
              <div class="flex items-center gap-1 text-gray-400">
+               <div class="relative">
+                 <button (click)="toggleNotifications($event)" class="p-2 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors relative" [class.bg-indigo-50]="showNotifications" [class.text-indigo-600]="showNotifications">
+                   <lucide-icon [img]="Bell" [size]="20"></lucide-icon>
+                   <span *ngIf="(unreadCount$ | async) as count" class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                   </span>
+                 </button>
+                 <!-- Dropdown -->
+                 <app-notification-dropdown *ngIf="showNotifications" class="absolute right-0 top-full" (click)="$event.stopPropagation()"></app-notification-dropdown>
+               </div>
+               
                <button class="p-2 hover:text-yellow-400 hover:bg-yellow-50 rounded-full transition-colors"><lucide-icon [img]="Star" [size]="18"></lucide-icon></button>
                <button class="p-2 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"><lucide-icon [img]="MoreHorizontal" [size]="18"></lucide-icon></button>
              </div>
@@ -229,8 +240,8 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
 
   mainMenuItems = [
     { icon: Search, label: 'Search', action: 'search' },
-    { icon: Bell, label: 'Notification', badge: '99+', action: 'notification' },
-    { icon: Calendar, label: 'Calendar', action: 'calendar' },
+    { icon: Bell, label: 'Notification', badge: '', route: '/dashboard/notifications' },
+    { icon: Calendar, label: 'Calendar', route: '/dashboard/calendar' },
     { icon: Settings, label: 'Settings', route: '/dashboard/profile' }
   ];
 
@@ -252,12 +263,16 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private projectService: ProjectService,
     private workspaceService: WorkspaceService,
+    private notificationService: NotificationApiService,
     public router: Router,
     private location: Location
   ) {
     this.projects$ = this.projectService.projects$;
 
-    // Subscribe to current workspace to get the ID
+    // Initialize currentWorkspaceId synchronously
+    this.currentWorkspaceId = this.workspaceService.getCurrentWorkspaceId() || '';
+
+    // Subscribe to current workspace to keep ID updated
     this.workspaceService.currentWorkspace$.subscribe(workspace => {
       if (workspace) {
         this.currentWorkspaceId = workspace.id;
@@ -265,13 +280,40 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Notifications
+  showNotifications = false;
+  unreadCount$!: Observable<number>;
+
+  toggleNotifications(event: Event) {
+    event.stopPropagation();
+    this.showNotifications = !this.showNotifications;
+  }
+
+  // Close notifications on click outside (will be handled by document listener if needed, but for now simple toggle)
+  // Or better, add a document click listener to close
+
   ngOnInit() {
+    this.unreadCount$ = this.notificationService.unreadCount$;
+
     // Prevent browser back/forward navigation from dashboard
     history.pushState(null, '', location.href);
     this.popStateListener = () => {
       history.pushState(null, '', location.href);
     };
     window.addEventListener('popstate', this.popStateListener);
+
+    // Close notifications on outside click
+    window.addEventListener('click', () => {
+       if (this.showNotifications) this.showNotifications = false;
+    });
+
+    // Update sidebar badge
+    this.notificationService.unreadCount$.subscribe(count => {
+      const notifItem = this.mainMenuItems.find(i => i.label === 'Notification');
+      if (notifItem) {
+        notifItem.badge = count > 0 ? (count > 99 ? '99+' : count.toString()) : '';
+      }
+    });
   }
 
   toggleSidebar() {

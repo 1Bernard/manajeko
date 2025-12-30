@@ -14,9 +14,10 @@ module Task
         member = Workspace::WorkspaceMember.find_by(user: @user, workspace_id: task.project.workspace_id)
         return Result.failure('Unauthorized', status: :forbidden) unless member
 
-        comment = Task::Comment.new(@params.merge(user: @user))
+        comment = ::Task::Comment.new(@params.merge(user: @user))
 
         if comment.save
+          ::Task::Services::ActivityService.create_activity(@user, task.id, 'commented', { comment_id: comment.id })
           Result.success(comment, status: :created)
         else
           Result.failure('Validation failed', status: :unprocessable_entity, details: comment.errors.as_json)

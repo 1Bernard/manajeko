@@ -37,8 +37,13 @@
         <!-- Panel Content -->
         <div class="flex-1 overflow-y-auto px-8 py-8 scrollbar-thin scrollbar-thumb-gray-200">
             <div class="flex justify-between items-start mb-6">
-                <h2 class="text-3xl font-extrabold text-gray-900 leading-tight">{{ task.title }}</h2>
-                <button class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                <!-- Editable Title -->
+                <h2 contenteditable="true" (blur)="onTitleBlur($event)" (keydown.enter)="onTitleEnter($event)"
+                    class="text-3xl font-extrabold text-gray-900 leading-tight outline-none border-b-2 border-transparent focus:border-indigo-500 transition-all empty:before:content-['Task_Title'] empty:before:text-gray-300">
+                    {{ task.title }}</h2>
+
+                <button (click)="deleteTask()"
+                    class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                     <lucide-icon [img]="Trash2" [size]="18"></lucide-icon>
                 </button>
             </div>
@@ -50,48 +55,167 @@
                     </div> Status
                 </div>
                 <div class="flex items-center gap-2 font-bold text-gray-800">
-                    <div
-                        [class]="'w-2.5 h-2.5 rounded-full ' + (task.status === 'Completed' ? 'bg-green-500' : 'bg-indigo-600')">
-                    </div> {{ task.status }}
+                    <select [ngModel]="task.status" (ngModelChange)="updateTaskField('status', $event)"
+                        class="bg-transparent font-bold text-gray-800 outline-none cursor-pointer hover:bg-gray-50 rounded px-1 -ml-1 py-0.5 transition-colors appearance-none">
+                        <option value="todo">To-do</option>
+                        <option value="in_progress">On Progress</option>
+                        <option value="in_review">In Review</option>
+                        <option value="done">Completed</option>
+                    </select>
                 </div>
 
                 <div class="text-gray-400 flex items-center gap-2 font-medium">
                     <div class="w-5 flex justify-center text-gray-300">
                         <lucide-icon [img]="Calendar" [size]="18"></lucide-icon>
-                    </div> Due date
+                    </div> Start Date
                 </div>
                 <div
-                    class="font-bold text-gray-800 flex items-center gap-2 bg-gray-50 w-fit px-3 py-1 rounded-md border border-gray-100">
-                    {{ task.due_date || 'No due date' }}</div>
+                    class="font-bold text-gray-800 flex items-center gap-2 bg-gray-50 w-fit px-3 py-1 rounded-md border border-gray-100 hover:border-indigo-300 transition-colors relative group">
+                    <input type="date" [ngModel]="startDateFormatted"
+                        (ngModelChange)="updateTaskField('start_date', $event)"
+                        [max]="dueDateFormatted"
+                        class="bg-transparent outline-none text-gray-800 w-full cursor-pointer p-0 border-none focus:ring-0 text-sm" />
+                    <div
+                        class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                        Changes auto-save
+                    </div>
+                </div>
+
+
+
+                <div class="text-gray-400 flex items-center gap-2 font-medium">
+                    <div class="w-5 flex justify-center text-gray-300">
+                        <lucide-icon [img]="Calendar" [size]="18"></lucide-icon>
+                    </div> Due Date
+                </div>
+                <div
+                    class="font-bold text-gray-800 flex items-center gap-2 bg-gray-50 w-fit px-3 py-1 rounded-md border border-gray-100 hover:border-indigo-300 transition-colors relative group">
+                    <input type="date" [ngModel]="dueDateFormatted"
+                        (ngModelChange)="updateTaskField('due_date', $event)"
+                        [min]="startDateFormatted"
+                        class="bg-transparent outline-none text-gray-800 w-full cursor-pointer p-0 border-none focus:ring-0 text-sm" />
+                    <div
+                        class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                        Changes auto-save
+                    </div>
+                </div>
+
+                <div class="text-gray-400 flex items-center gap-2 font-medium">
+                    <div class="w-5 flex justify-center text-gray-300">
+                        <lucide-icon [img]="AlertCircle" [size]="18"></lucide-icon>
+                    </div> Priority
+                </div>
+                <div class="flex items-center gap-2 font-bold text-gray-800">
+                    <select [ngModel]="task.priority | lowercase" (ngModelChange)="updateTaskField('priority', $event)"
+                        class="bg-transparent font-bold text-gray-800 outline-none cursor-pointer hover:bg-gray-50 rounded px-1 -ml-1 py-0.5 transition-colors appearance-none capitalize">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
 
                 <div class="text-gray-400 flex items-center gap-2 font-medium">
                     <div class="w-5 flex justify-center text-gray-300">
                         <lucide-icon [img]="UserPlus" [size]="18"></lucide-icon>
                     </div> Assignee
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 relative">
                     <div *ngFor="let user of task.assignees"
-                        class="flex items-center gap-2 bg-white pl-1 pr-3 py-1 rounded-full border border-gray-200 shadow-sm">
+                        class="flex items-center gap-2 bg-white pl-1 pr-2 py-1 rounded-full border border-gray-200 shadow-sm group cursor-default">
                         <app-avatar [user]="user" size="w-6 h-6"></app-avatar>
                         <span class="text-xs font-bold text-gray-700">{{ user.name }}</span>
+                        <button (click)="removeAssignee(user, $event)" 
+                            class="ml-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-all">
+                            <lucide-icon [img]="X" [size]="12"></lucide-icon>
+                        </button>
                     </div>
-                    <button
-                        class="text-xs font-bold text-gray-500 border border-dashed border-gray-300 px-3 py-1.5 rounded-full hover:border-indigo-500 hover:text-indigo-600 flex items-center gap-1 transition-all">
-                        <lucide-icon [img]="Plus" [size]="12"></lucide-icon> Invite
+
+                    <!-- Add Assignee Button -->
+                    <button (click)="toggleAssigneeDropdown($event)"
+                        class="w-8 h-8 rounded-full border border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-colors">
+                        <lucide-icon [img]="Plus" [size]="16"></lucide-icon>
                     </button>
+
+                    <!-- Assignee Dropdown -->
+                    <div *ngIf="showAssigneeDropdown" 
+                        class="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                        <div class="p-2 border-b border-gray-100 bg-gray-50/50" (click)="$event.stopPropagation()">
+                            <input type="text" placeholder="Search members..." 
+                                [(ngModel)]="assigneeSearchQuery"
+                                (click)="$event.stopPropagation()"
+                                class="w-full bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs outline-none focus:border-indigo-300 transition-colors">
+                        </div>
+                        <div class="max-h-60 overflow-y-auto py-1">
+                            <button *ngFor="let user of getAvailableUsers()" (click)="addAssignee(user)"
+                                class="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 text-left transition-colors">
+                                <app-avatar [user]="user" size="w-8 h-8"></app-avatar>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-gray-900 truncate">{{ user.name }}</p>
+                                    <p class="text-xs text-gray-500 truncate">{{ user.email }}</p>
+                                </div>
+                            </button>
+                            <div *ngIf="getAvailableUsers().length === 0" class="px-4 py-8 text-center text-gray-400 text-xs">
+                                No more members to add
+                            </div>
+                        </div>
+                        <div class="p-2 border-t border-gray-100 bg-gray-50/50 text-center">
+                            <button (click)="inviteMember.emit()" 
+                                class="text-xs font-medium text-indigo-600 hover:text-indigo-700">Invite new member</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="text-gray-400 flex items-center gap-2 font-medium">
-                    <div class="w-5 flex justify-center text-gray-300">
-                        <lucide-icon [img]="LayoutGrid" [size]="18"></lucide-icon>
+                     <div class="w-5 flex justify-center text-gray-300">
+                        <lucide-icon [img]="Tag" [size]="18"></lucide-icon>
                     </div> Tags
                 </div>
-                <div class="flex gap-2">
-                    <span *ngIf="!task.tags || task.tags.length === 0" class="text-sm text-gray-400">No tags</span>
-                    <span *ngFor="let tag of task.tags" class="px-3 py-1 rounded-lg text-xs font-semibold text-white"
-                        [style.background-color]="tag.color || '#6366f1'">
+                <div class="flex flex-wrap items-center gap-2 relative">
+                    <!-- Existing Tags -->
+                     <span *ngFor="let tag of task.tags" 
+                        class="px-2 py-0.5 rounded-md text-[10px] font-bold mr-1 flex items-center gap-1 group whitespace-nowrap shadow-sm text-white"
+                        [ngStyle]="getTagStyles(tag)">
                         {{ tag.name }}
+                        <button (click)="removeTag(tag, $event)" class="ml-1 opacity-60 group-hover:opacity-100 transition-opacity hover:text-gray-200">
+                            <lucide-icon [img]="X" [size]="10"></lucide-icon>
+                        </button>
                     </span>
+
+                    <!-- Add Tag Button -->
+                    <button (click)="toggleTagDropdown($event)"
+                        class="w-6 h-6 rounded-full border border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-colors">
+                        <lucide-icon [img]="Plus" [size]="14"></lucide-icon>
+                    </button>
+
+                     <!-- Tag Dropdown -->
+                    <div *ngIf="showTagDropdown" 
+                        class="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                        <div class="p-2 border-b border-gray-100 bg-gray-50/50" (click)="$event.stopPropagation()">
+                            <input type="text" placeholder="Search or create tag..." 
+                                [(ngModel)]="tagSearchQuery"
+                                (click)="$event.stopPropagation()"
+                                (keyup.enter)="createTag()"
+                                class="w-full bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs outline-none focus:border-indigo-300 transition-colors">
+                        </div>
+                        <div class="max-h-60 overflow-y-auto py-1">
+                            <button *ngFor="let tag of getFilteredTags()" (click)="addTag(tag)"
+                                class="w-full flex items-center px-4 py-2 hover:bg-gray-50 text-left transition-colors">
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-2 w-fit shadow-sm text-white" 
+                                    [ngStyle]="getTagStyles(tag)">
+                                    {{ tag.name }}
+                                </span>
+                            </button>
+                            
+                            <button *ngIf="tagSearchQuery && getFilteredTags().length === 0" (click)="createTag()"
+                                class="w-full text-left px-4 py-3 text-xs text-indigo-600 hover:bg-indigo-50 font-medium border-t border-gray-50">
+                                + Create "{{ tagSearchQuery }}"
+                            </button>
+                             <div *ngIf="!tagSearchQuery && getFilteredTags().length === 0" class="px-4 py-8 text-center text-gray-400 text-xs">
+                                No tags found
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="text-gray-400 flex items-center gap-2 self-start pt-1 font-medium">
@@ -99,10 +223,10 @@
                         <lucide-icon [img]="FileText" [size]="18"></lucide-icon>
                     </div> Description
                 </div>
-                <div
-                    class="p-5 bg-gray-50 rounded-2xl border border-gray-100 text-gray-700 leading-relaxed text-[15px]">
-                    {{ task.description || 'No description provided.' }}
-                </div>
+                <!-- Editable Description -->
+                <textarea [ngModel]="task.description" (change)="updateTaskField('description', descInput.value)"
+                    #descInput rows="4" placeholder="Add a description..."
+                    class="w-full p-4 bg-gray-50 rounded-2xl border border-gray-100 text-gray-700 leading-relaxed text-[15px] resize-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"></textarea>
             </div>
 
             <!-- Attachments -->
@@ -138,15 +262,42 @@
                             <lucide-icon [img]="Trash2" [size]="14"></lucide-icon>
                         </button>
                     </div>
-                    <button (click)="triggerFileUpload()"
-                        class="flex items-center justify-center h-[80px] rounded-xl border border-dashed border-gray-300 text-gray-400 hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-all">
-                        <div class="flex flex-col items-center gap-1">
-                            <lucide-icon [img]="Plus" [size]="24"></lucide-icon>
-                            <span class="text-xs font-semibold">Upload</span>
+                    <label class="drop-zone" [class.drop-zone-active]="isDragging" (drop)="onDrop($event)"
+                        (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (click)="triggerFileUpload()">
+                        <div class="upload-thumbnail">
+                            <lucide-icon [img]="Upload" [size]="24" class="text-indigo-600"></lucide-icon>
                         </div>
-                    </button>
+                        <div class="upload-details">
+                            <div class="upload-title">Click to upload or drag and drop</div>
+                            <div class="upload-subtitle">Any file type (Max 10MB)</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <lucide-icon [img]="Plus" [size]="20" class="text-gray-400"></lucide-icon>
+                        </div>
+                    </label>
                     <input type="file" id="fileUpload" (change)="handleFileUpload($event)" class="hidden" />
                 </div>
+            </div>
+
+            <!-- Upload Area (when no attachments) -->
+            <div *ngIf="!task.attachments || task.attachments.length === 0" class="mb-10">
+                <div class="flex items-center gap-2 text-gray-900 font-bold text-sm mb-4">
+                    <lucide-icon [img]="Paperclip" [size]="18" class="text-gray-400"></lucide-icon> Attachments
+                </div>
+                <label class="drop-zone" [class.drop-zone-active]="isDragging" (drop)="onDrop($event)"
+                    (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (click)="triggerFileUpload()">
+                    <div class="upload-thumbnail">
+                        <lucide-icon [img]="Upload" [size]="24" class="text-indigo-600"></lucide-icon>
+                    </div>
+                    <div class="upload-details">
+                        <div class="upload-title">Click to upload or drag and drop</div>
+                        <div class="upload-subtitle">Any file type (Max 10MB)</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <lucide-icon [img]="Plus" [size]="20" class="text-gray-400"></lucide-icon>
+                    </div>
+                </label>
+                <input type="file" id="fileUpload" (change)="handleFileUpload($event)" class="hidden" />
             </div>
 
             <!-- Dynamic Tabbed Section -->

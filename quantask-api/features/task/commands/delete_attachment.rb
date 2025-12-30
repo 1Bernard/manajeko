@@ -7,7 +7,7 @@ module Task
       end
 
       def call
-        attachment = Task::Attachment.find_by(id: @attachment_id)
+        attachment = ::Task::Attachment.find_by(id: @attachment_id)
         return Result.failure('Attachment not found', status: :not_found) unless attachment
 
         # Check authorization (uploader or project owner)

@@ -4,15 +4,12 @@ module Workspace
       module V1
         class MembersController < ::Api::V1::BaseController
           def index
-            workspace = ::Workspace::Workspace.find(params[:workspace_id])
-            
-            # Check if current user is member
-            unless ::Workspace::WorkspaceMember.exists?(workspace: workspace, user: current_user)
-              return render json: { error: "Unauthorized" }, status: :forbidden
+            result = ::Workspace::Services::MemberService.index(current_user, params[:workspace_id])
+            if result.success?
+              render json: ::Identity::Api::V1::UserSerializer.new(result.value).serializable_hash
+            else
+              render json: { error: result.error }, status: result.status
             end
-
-            members = workspace.users
-            render json: ::Identity::Api::V1::UserSerializer.new(members).serializable_hash
           end
         end
       end

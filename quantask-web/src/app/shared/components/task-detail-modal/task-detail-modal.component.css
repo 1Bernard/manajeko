@@ -15,3 +15,56 @@
 :host ::ng-deep .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: #d1d5db;
 }
+
+/* Upload Drop Zone - File Item Style */
+.drop-zone {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 0.75rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+}
+
+.drop-zone:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.drop-zone.drop-zone-active {
+    border-color: #3b82f6;
+    background-color: #f0f9ff;
+}
+
+.upload-thumbnail {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    background-color: #f0f9ff;
+    border: 1px solid #e0e7ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-details {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.upload-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.upload-subtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+}

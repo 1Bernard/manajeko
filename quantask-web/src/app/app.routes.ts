@@ -26,8 +26,16 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/dashboard/pages/project-board/project-board.component').then(m => m.ProjectBoardComponent)
             },
             {
+                path: 'notifications',
+                loadComponent: () => import('./features/dashboard/pages/notification-page/notification-page.component').then(m => m.NotificationPageComponent)
+            },
+            {
+                path: 'calendar',
+                loadComponent: () => import('./features/dashboard/pages/calendar-page/calendar-page.component').then(m => m.CalendarPageComponent)
+            },
+            {
                 path: 'profile',
-                loadComponent: () => import('./features/dashboard/pages/profile/profile.component').then(m => m.ProfileComponent)
+                loadComponent: () => import('./features/dashboard/pages/user-profile/user-profile.component').then(m => m.UserProfileComponent)
             }
         ]
     }
