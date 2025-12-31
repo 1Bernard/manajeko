@@ -47,7 +47,7 @@ interface DashboardViewModel {
         <div class="mb-8 flex justify-between items-end">
           <div>
             <h1 class="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">
-              Welcome back, {{ vm.currentUser?.firstName || 'User' }}! 👋
+              Welcome back, {{ vm.currentUser?.first_name || vm.currentUser?.firstName || 'User' }}! 👋
             </h1>
             <p class="text-gray-500">Here's what's happening in your workspace today.</p>
           </div>

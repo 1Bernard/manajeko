@@ -7,7 +7,9 @@ export interface User {
     id: string;
     email: string;
     firstName: string;
+    first_name?: string; // Backend snake_case
     lastName: string;
+    last_name?: string; // Backend snake_case
     fullName: string;
     initials: string;
     otpMethod: string;
