@@ -179,7 +179,7 @@ import { CreateProjectModalComponent } from '../../../../shared/components/creat
             <div class="p-6 border-b border-gray-100">
               <div class="flex items-center gap-3">
                 <lucide-icon [img]="Search" [size]="24" class="text-indigo-600"></lucide-icon>
-                <h2 class="text-xl font-bold text-gray-900">Search Everything</h2>
+                <h2 class="text-xl font-bold text-gray-900">Search</h2>
                 <button (click)="isSearchVisible = false" 
                         class="ml-auto text-gray-400 hover:text-gray-600 transition-colors">
                   <lucide-icon [img]="X" [size]="20"></lucide-icon>
