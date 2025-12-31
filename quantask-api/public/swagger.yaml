@@ -3,6 +3,12 @@ openapi: 3.0.1
 info:
   title: Manajeko API V1
   version: v1
+  version: v1
+servers:
+  - url: https://manajeko-api.onrender.com
+    description: Production Server
+  - url: http://localhost:3001
+    description: Local Development
 paths:
   "/api/v1/analytics/dashboard":
     get:
