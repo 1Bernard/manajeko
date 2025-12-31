@@ -3,7 +3,6 @@ openapi: 3.0.1
 info:
   title: Manajeko API V1
   version: v1
-  version: v1
 servers:
   - url: https://manajeko-api.onrender.com
     description: Production Server
@@ -755,18 +754,18 @@ paths:
             type: string
         - name: due_date_from
           in: query
-          format: date
           description: Due date from
           required: false
           schema:
             type: string
+            format: date
         - name: due_date_to
           in: query
-          format: date
           description: Due date to
           required: false
           schema:
             type: string
+            format: date
         - name: sort_by
           in: query
           description: Sort criteria (due_date, priority)
@@ -919,9 +918,6 @@ paths:
       responses:
         "200":
           description: successful
-servers:
-  - url: http://localhost:3001
-    description: Local development server
 components:
   securitySchemes:
     bearer_auth:
