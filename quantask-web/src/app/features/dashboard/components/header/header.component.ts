@@ -42,9 +42,14 @@ import { Router } from '@angular/router';
           <div class="relative">
             <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true" (click)="logout()">
               <span class="sr-only">Open user menu</span>
-              <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs">
-                {{ (authService.currentUser$ | async)?.initials || 'U' }}
-              </div>
+              <ng-container *ngIf="authService.currentUser$ | async as user">
+                  <img *ngIf="user.avatar || user.avatar_url; else headerAvatarFallback" class="h-8 w-8 rounded-full bg-indigo-50" [src]="user.avatar || user.avatar_url" alt="User Avatar">
+                  <ng-template #headerAvatarFallback>
+                    <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs">
+                        {{ user.initials || 'U' }}
+                    </div>
+                  </ng-template>
+              </ng-container>
               <span class="hidden lg:flex lg:items-center">
                 <span class="ml-4 text-sm font-semibold leading-6 text-slate-900" aria-hidden="true">
                   {{ (authService.currentUser$ | async)?.fullName || 'User' }}

@@ -10,11 +10,11 @@ import { LucideAngularModule, LayoutGrid, Menu, X } from 'lucide-angular';
   template: `
     <nav [class]="'fixed w-full z-50 transition-all duration-300 ' + (scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6')">
       <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-2xl shadow-slate-200">
             <lucide-icon [img]="LayoutGrid" [size]="22"></lucide-icon>
           </div>
-          <span class="text-xl font-bold text-slate-900 tracking-tight">Craftboard.</span>
+          <span class="text-xl font-black text-slate-900 tracking-tighter">Manajeko</span>
         </div>
 
         <!-- Desktop Menu -->
@@ -42,7 +42,8 @@ import { LucideAngularModule, LayoutGrid, Menu, X } from 'lucide-angular';
       <!-- Mobile Menu -->
       <div *ngIf="mobileMenuOpen" class="absolute top-full left-0 w-full bg-white border-b border-gray-100 p-6 md:hidden flex flex-col gap-4 shadow-xl animate-in slide-in-from-top-5">
         <a *ngFor="let item of menuItems" 
-           href="#" 
+           [href]="'#' + item.toLowerCase()" 
+           (click)="mobileMenuOpen = false"
            class="text-lg font-medium text-slate-600 py-2 border-b border-gray-50">
           {{ item }}
         </a>
@@ -56,7 +57,7 @@ import { LucideAngularModule, LayoutGrid, Menu, X } from 'lucide-angular';
 export class NavbarComponent {
   scrolled = false;
   mobileMenuOpen = false;
-  menuItems = ['Features', 'Solutions', 'Pricing', 'Resources'];
+  menuItems = ['Features', 'Soundscapes', 'About'];
 
   readonly LayoutGrid = LayoutGrid;
   readonly Menu = Menu;

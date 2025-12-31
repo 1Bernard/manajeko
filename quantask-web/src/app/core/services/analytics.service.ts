@@ -39,6 +39,8 @@ export interface Activity {
     action: string;
     target: string;
     time: string;
+    taskId: number;
+    projectId: number;
 }
 
 @Injectable({
@@ -49,8 +51,12 @@ export class AnalyticsService {
 
     constructor(private http: HttpClient) { }
 
-    getTaskStats(): Observable<TaskStats> {
-        return this.http.get<any>(`${this.apiUrl}/dashboard`).pipe(
+    getTaskStats(workspaceId?: string | null): Observable<TaskStats> {
+        let url = `${this.apiUrl}/dashboard`;
+        if (workspaceId) {
+            url += `?workspace_id=${workspaceId}`;
+        }
+        return this.http.get<any>(url).pipe(
             map(response => {
                 const data = response.data;
                 const stats = data.tasks_by_status || {};

@@ -8,18 +8,23 @@ import { RevealOnScrollComponent } from '../../../../shared/components/reveal-on
   standalone: true,
   imports: [CommonModule, RouterLink, RevealOnScrollComponent],
   template: `
-    <section class="py-24 bg-white text-center">
+    <section id="about" class="py-32 relative">
       <app-reveal-on-scroll>
-        <div class="max-w-4xl mx-auto px-6 bg-gradient-to-r from-indigo-50 to-pink-50 rounded-[3rem] p-12 relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-200/30 rounded-full blur-3xl"></div>
-          <div class="absolute bottom-0 left-0 w-64 h-64 bg-pink-200/30 rounded-full blur-3xl"></div>
-          
-          <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 relative z-10">Supercharge Your Workflow</h2>
-          <p class="text-lg text-slate-600 mb-10 max-w-2xl mx-auto relative z-10">Join 10,000+ teams who have switched to Craftboard. Start your 14-day free trial today.</p>
-          
-          <div class="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
-            <a routerLink="/auth/register" class="px-8 py-4 bg-[#1C1D22] text-white rounded-xl font-bold hover:scale-105 transition-transform shadow-lg">Get Started Now</a>
-            <button class="px-8 py-4 bg-white text-slate-900 border border-slate-200 rounded-xl font-bold hover:bg-gray-50 transition-colors">Talk to Sales</button>
+        <div class="max-w-6xl mx-auto px-6">
+          <div class="relative bg-slate-900 rounded-[3rem] p-16 md:p-24 overflow-hidden text-center">
+            <!-- Sophisticated Accents -->
+            <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px] -z-0"></div>
+            <div class="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] -z-0"></div>
+            
+            <div class="relative z-10">
+              <h2 class="text-5xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-none">Your journey to <br/> clarity starts now.</h2>
+              <p class="text-xl text-slate-400 mb-14 max-w-2xl mx-auto font-medium">Join a refined circle of creators who prioritize their focus as much as their output. Start your transformation today.</p>
+              
+              <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <a routerLink="/auth/register" class="px-12 py-5 bg-white text-slate-900 rounded-3xl font-bold text-lg hover:shadow-[0_20px_50px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all duration-500">Get Early Access</a>
+                <button class="px-12 py-5 bg-slate-800 text-white border border-slate-700 rounded-3xl font-bold text-lg hover:bg-slate-700 transition-all duration-500">View Experience</button>
+              </div>
+            </div>
           </div>
         </div>
       </app-reveal-on-scroll>

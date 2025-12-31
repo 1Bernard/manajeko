@@ -1,8 +1,9 @@
 module Intelligence
   module Services
     class AnalyticsService
-      def initialize(user)
+      def initialize(user, workspace_id = nil)
         @user = user
+        @workspace_id = workspace_id
       end
 
       def dashboard_stats
@@ -21,11 +22,11 @@ module Intelligence
       private
 
       def scope
-        # Scope to tasks assigned to the user OR created by the user
-        # interacting with the tasks table directly to avoid INNER JOIN exclusion
-        ::Task::Task.left_outer_joins(:task_assignments)
-                    .where('task_assignments.user_id = ? OR tasks.creator_id = ?', @user.id, @user.id)
-                    .distinct
+        # Scope to all tasks in projects that belong to the user's workspaces
+        # This aligns with "Workspace Overview" and matches Project Board visibility
+        workspace_ids = @user.workspaces.pluck(:id)
+        project_ids = ::Project::Project.where(workspace_id: workspace_ids).pluck(:id)
+        ::Task::Task.where(project_id: project_ids).distinct
       end
 
       def completed_scope
@@ -65,7 +66,7 @@ module Intelligence
              .order(due_date: :asc)
              .limit(5)
              .as_json(
-               only: [:id, :title, :due_date, :priority, :status],
+               only: [:id, :project_id, :title, :due_date, :priority, :status],
                include: {
                  assignees: { 
                    only: [:id, :first_name, :last_name, :email], 
@@ -101,6 +102,8 @@ module Intelligence
                             },
                             action: activity.action_type,
                             target: activity.task.title,
+                            taskId: activity.task_id,
+                            projectId: activity.task.project_id,
                             time: activity.created_at.strftime("%b %d, %H:%M") # Format: Dec 15, 09:30
                           }
                         end

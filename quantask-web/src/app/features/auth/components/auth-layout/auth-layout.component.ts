@@ -21,7 +21,7 @@ import { LucideAngularModule, LayoutGrid } from 'lucide-angular';
               <div class="w-8 h-8 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-lg flex items-center justify-center text-white">
                 <lucide-icon [img]="LayoutGrid" [size]="18"></lucide-icon>
               </div>
-              <span class="text-lg font-bold tracking-tight">Craftboard.</span>
+              <span class="text-lg font-bold tracking-tight">Manajeko.</span>
             </div>
           </div>
 
@@ -36,7 +36,7 @@ import { LucideAngularModule, LayoutGrid } from 'lucide-angular';
           </div>
 
           <div class="relative z-10 flex items-center gap-4 text-xs text-gray-500 font-medium">
-            <span>© 2025 Craftboard Inc.</span>
+            <span>© 2025 Manajeko Inc.</span>
             <span class="w-1 h-1 rounded-full bg-gray-700"></span>
             <a href="#" class="hover:text-gray-300">Privacy</a>
             <span class="w-1 h-1 rounded-full bg-gray-700"></span>

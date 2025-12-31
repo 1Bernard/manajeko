@@ -25,7 +25,7 @@ puts "👤 Creating users..."
 users = []
 
 user1 = Identity::User.create!(
-  email: 'demo@quantask.com',
+  email: 'demo@manajeko.com',
   password: 'password123',
   first_name: 'Demo',
   last_name: 'User',
@@ -34,7 +34,7 @@ user1 = Identity::User.create!(
 users << user1
 
 user2 = Identity::User.create!(
-  email: 'john@quantask.com',
+  email: 'john@manajeko.com',
   password: 'password123',
   first_name: 'John',
   last_name: 'Doe',
@@ -43,7 +43,7 @@ user2 = Identity::User.create!(
 users << user2
 
 user3 = Identity::User.create!(
-  email: 'jane@quantask.com',
+  email: 'jane@manajeko.com',
   password: 'password123',
   first_name: 'Jane',
   last_name: 'Smith',
@@ -354,8 +354,8 @@ puts "  Subtasks: #{Task::Subtask.count}"
 puts "  Comments: #{Task::Comment.count}"
 puts "=" * 50
 puts "\n🔑 Login credentials:"
-puts "  Email: demo@quantask.com"
+puts "  Email: demo@manajeko.com"
 puts "  Password: password123"
-puts "\n  Other users: john@quantask.com, jane@quantask.com"
+puts "\n  Other users: john@manajeko.com, jane@manajeko.com"
 puts "  Password: password123"
 puts "=" * 50

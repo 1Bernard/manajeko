@@ -20,6 +20,13 @@ module Task
         task.position = @position if @position.present?
 
         if task.save
+          # Log Activity
+          if task.saved_change_to_status?
+             ::Task::Services::ActivityService.create_activity(@user, task.id, 'status_changed', { from: task.status_before_last_save, to: task.status })
+          else
+             ::Task::Services::ActivityService.create_activity(@user, task.id, 'moved')
+          end
+
           Result.success(task)
         else
           Result.failure('Validation failed', status: :unprocessable_entity, details: task.errors.as_json)

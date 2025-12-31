@@ -45,6 +45,13 @@ module Task
                notifiable: task
              )
            end
+           
+           # Log Activity
+           if task.saved_change_to_status?
+             ::Task::Services::ActivityService.create_activity(@user, task.id, 'status_changed', { from: task.status_before_last_save, to: task.status })
+           else
+             ::Task::Services::ActivityService.create_activity(@user, task.id, 'updated')
+           end
 
           Result.success(task)
         else

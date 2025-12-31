@@ -1,41 +1,110 @@
 ---
 openapi: 3.0.1
 info:
-  title: API V1
+  title: Manajeko API V1
   version: v1
 paths:
+  "/api/v1/analytics/dashboard":
+    get:
+      summary: get dashboard stats
+      tags:
+        - Analytics
+      security:
+        - bearer_auth: []
+      responses:
+        "200":
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_tasks:
+                    type: integer
+                  completed_tasks:
+                    type: integer
+                  overdue_tasks_count:
+                    type: integer
+                  tasks_by_status:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                  tasks_by_priority:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                  completion_trend:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                        count:
+                          type: integer
+                  upcoming_deadlines:
+                    type: array
+                    items:
+                      type: object
+                  recent_activities:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        taskId:
+                          type: integer
+                        projectId:
+                          type: integer
+                        action:
+                          type: string
+                        target:
+                          type: string
+                        time:
+                          type: string
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            avatar:
+                              type: string
+                              nullable: true
   "/api/v1/tasks/{task_id}/activities":
     parameters:
-    - name: task_id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       summary: list task activities
       tags:
-      - Activities
+        - Activities
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
   "/api/v1/tasks/{task_id}/attachments":
     parameters:
-    - name: task_id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
     post:
       summary: upload attachment
       tags:
-      - Attachments
+        - Attachments
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '201':
+        "201":
           description: created
       requestBody:
         content:
@@ -50,44 +119,44 @@ paths:
                     format: binary
   "/api/v1/attachments/{id}":
     parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
     delete:
       summary: delete attachment
       tags:
-      - Attachments
+        - Attachments
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '204':
+        "204":
           description: no content
   "/api/v1/attachments/{id}/download":
     parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       summary: download attachment
       tags:
-      - Attachments
+        - Attachments
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '302':
+        "302":
           description: found
   "/api/v1/auth/register":
     post:
       summary: register user
       tags:
-      - Authentication
+        - Authentication
       parameters: []
       responses:
-        '201':
+        "201":
           description: created
       requestBody:
         content:
@@ -113,21 +182,21 @@ paths:
                 otp_method:
                   type: string
                   enum:
-                  - email
-                  - sms
+                    - email
+                    - sms
                   default: email
               required:
-              - email
-              - password
-              - password_confirmation
+                - email
+                - password
+                - password_confirmation
   "/api/v1/auth/verify-otp":
     post:
       summary: verify otp
       tags:
-      - Authentication
+        - Authentication
       parameters: []
       responses:
-        '200':
+        "200":
           description: successful
       requestBody:
         content:
@@ -140,16 +209,16 @@ paths:
                 otp_code:
                   type: string
               required:
-              - email
-              - otp_code
+                - email
+                - otp_code
   "/api/v1/auth/resend-otp":
     post:
       summary: resend otp
       tags:
-      - Authentication
+        - Authentication
       parameters: []
       responses:
-        '200':
+        "200":
           description: successful
       requestBody:
         content:
@@ -160,15 +229,15 @@ paths:
                 email:
                   type: string
               required:
-              - email
+                - email
   "/api/v1/auth/login":
     post:
       summary: login user
       tags:
-      - Authentication
+        - Authentication
       parameters: []
       responses:
-        '200':
+        "200":
           description: successful
       requestBody:
         content:
@@ -181,27 +250,27 @@ paths:
                 password:
                   type: string
               required:
-              - email
-              - password
+                - email
+                - password
   "/api/v1/auth/me":
     get:
       summary: get current user profile
       tags:
-      - Authentication
+        - Authentication
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
     patch:
       summary: update profile
       tags:
-      - Authentication
+        - Authentication
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '200':
+        "200":
           description: successful
       requestBody:
         content:
@@ -229,29 +298,29 @@ paths:
                   nullable: true
   "/api/v1/tasks/{task_id}/comments":
     parameters:
-    - name: task_id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       summary: list comments
       tags:
-      - Comments
+        - Comments
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
     post:
       summary: create comment
       tags:
-      - Comments
+        - Comments
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '201':
+        "201":
           description: created
       requestBody:
         content:
@@ -262,84 +331,84 @@ paths:
                 content:
                   type: string
               required:
-              - content
+                - content
   "/api/v1/comments/{id}":
     parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
     delete:
       summary: delete comment
       tags:
-      - Comments
+        - Comments
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '204':
+        "204":
           description: no content
   "/api/v1/notifications":
     get:
       summary: list notifications
       tags:
-      - Notifications
+        - Notifications
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
     patch:
       summary: mark all as read
       tags:
-      - Notifications
+        - Notifications
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
   "/api/v1/notifications/{id}/mark_read":
     parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
     patch:
       summary: mark notification as read
       tags:
-      - Notifications
+        - Notifications
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
   "/api/v1/workspaces/{workspace_id}/projects":
     parameters:
-    - name: workspace_id
-      in: path
-      description: Workspace ID
-      required: true
-      schema:
-        type: string
+      - name: workspace_id
+        in: path
+        description: Workspace ID
+        required: true
+        schema:
+          type: string
     get:
       summary: list projects
       tags:
-      - Projects
+        - Projects
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
     post:
       summary: create project
       tags:
-      - Projects
+        - Projects
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '201':
+        "201":
           description: created
       requestBody:
         content:
@@ -354,8 +423,8 @@ paths:
                 visibility:
                   type: string
                   enum:
-                  - private
-                  - public
+                    - private
+                    - public
                 color:
                   type: string
                 icon:
@@ -367,33 +436,33 @@ paths:
                 status:
                   type: string
               required:
-              - name
+                - name
   "/api/v1/projects/{id}":
     parameters:
-    - name: id
-      in: path
-      description: Project ID
-      required: true
-      schema:
-        type: string
+      - name: id
+        in: path
+        description: Project ID
+        required: true
+        schema:
+          type: string
     get:
       summary: show project
       tags:
-      - Projects
+        - Projects
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
     patch:
       summary: update project
       tags:
-      - Projects
+        - Projects
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '200':
+        "200":
           description: successful
       requestBody:
         content:
@@ -412,8 +481,8 @@ paths:
                 visibility:
                   type: string
                   enum:
-                  - private
-                  - public
+                    - private
+                    - public
                 icon:
                   type: string
                   nullable: true
@@ -423,45 +492,45 @@ paths:
     delete:
       summary: delete project
       tags:
-      - Projects
+        - Projects
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '204':
+        "204":
           description: no content
   "/api/v1/search":
     get:
       summary: global search
       tags:
-      - Search
+        - Search
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters:
-      - name: q
-        in: query
-        description: Search term
-        required: true
-        schema:
-          type: string
+        - name: q
+          in: query
+          description: Search term
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: successful
   "/api/v1/tasks/{task_id}/subtasks":
     parameters:
-    - name: task_id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
     post:
       summary: create subtask
       tags:
-      - Subtasks
+        - Subtasks
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '201':
+        "201":
           description: created
       requestBody:
         content:
@@ -474,23 +543,23 @@ paths:
                 is_completed:
                   type: boolean
               required:
-              - title
+                - title
   "/api/v1/subtasks/{id}":
     parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
     patch:
       summary: update subtask
       tags:
-      - Subtasks
+        - Subtasks
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '200':
+        "200":
           description: successful
       requestBody:
         content:
@@ -505,37 +574,37 @@ paths:
     delete:
       summary: delete subtask
       tags:
-      - Subtasks
+        - Subtasks
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '204':
+        "204":
           description: no content
   "/api/v1/projects/{project_id}/tags":
     parameters:
-    - name: project_id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: project_id
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       summary: list tags
       tags:
-      - Tags
+        - Tags
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
     post:
       summary: create tag
       tags:
-      - Tags
+        - Tags
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '201':
+        "201":
           description: created
       requestBody:
         content:
@@ -548,24 +617,24 @@ paths:
                 color:
                   type: string
               required:
-              - name
-              - color
+                - name
+                - color
   "/api/v1/tags/{id}":
     parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
     patch:
       summary: update tag
       tags:
-      - Tags
+        - Tags
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '200':
+        "200":
           description: successful
       requestBody:
         content:
@@ -580,28 +649,28 @@ paths:
     delete:
       summary: delete tag
       tags:
-      - Tags
+        - Tags
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '204':
+        "204":
           description: no content
   "/api/v1/tasks/{task_id}/tags":
     parameters:
-    - name: task_id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
     post:
       summary: add tag to task
       tags:
-      - Tags
+        - Tags
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '200':
+        "200":
           description: successful
       requestBody:
         content:
@@ -612,110 +681,110 @@ paths:
                 tag_id:
                   type: integer
               required:
-              - tag_id
+                - tag_id
   "/api/v1/tasks/{task_id}/tags/{tag_id}":
     parameters:
-    - name: task_id
-      in: path
-      required: true
-      schema:
-        type: string
-    - name: tag_id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: tag_id
+        in: path
+        required: true
+        schema:
+          type: string
     delete:
       summary: remove tag from task
       tags:
-      - Tags
+        - Tags
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
   "/api/v1/tasks":
     get:
       summary: list tasks
       tags:
-      - Tasks
+        - Tasks
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters:
-      - name: project_id
-        in: query
-        description: Filter by Project ID
-        required: false
-        schema:
-          type: string
-      - name: q
-        in: query
-        description: Search term
-        required: false
-        schema:
-          type: string
-      - name: status
-        in: query
-        description: Filter by status
-        required: false
-        schema:
-          type: string
-      - name: priority
-        in: query
-        description: Filter by priority
-        required: false
-        schema:
-          type: string
-      - name: task_type
-        in: query
-        description: Filter by task type
-        required: false
-        schema:
-          type: string
-      - name: assignee_id
-        in: query
-        description: Filter by assignee
-        required: false
-        schema:
-          type: string
-      - name: due_date_from
-        in: query
-        format: date
-        description: Due date from
-        required: false
-        schema:
-          type: string
-      - name: due_date_to
-        in: query
-        format: date
-        description: Due date to
-        required: false
-        schema:
-          type: string
-      - name: sort_by
-        in: query
-        description: Sort criteria (due_date, priority)
-        required: false
-        schema:
-          type: string
+        - name: project_id
+          in: query
+          description: Filter by Project ID
+          required: false
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Search term
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filter by status
+          required: false
+          schema:
+            type: string
+        - name: priority
+          in: query
+          description: Filter by priority
+          required: false
+          schema:
+            type: string
+        - name: task_type
+          in: query
+          description: Filter by task type
+          required: false
+          schema:
+            type: string
+        - name: assignee_id
+          in: query
+          description: Filter by assignee
+          required: false
+          schema:
+            type: string
+        - name: due_date_from
+          in: query
+          format: date
+          description: Due date from
+          required: false
+          schema:
+            type: string
+        - name: due_date_to
+          in: query
+          format: date
+          description: Due date to
+          required: false
+          schema:
+            type: string
+        - name: sort_by
+          in: query
+          description: Sort criteria (due_date, priority)
+          required: false
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: successful
     post:
       summary: create task
       tags:
-      - Tasks
+        - Tasks
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters:
-      - name: project_id
-        in: query
-        description: Project ID
-        required: true
-        schema:
-          type: string
+        - name: project_id
+          in: query
+          description: Project ID
+          required: true
+          schema:
+            type: string
       responses:
-        '201':
+        "201":
           description: created
       requestBody:
         content:
@@ -756,25 +825,25 @@ paths:
                     type: integer
                   nullable: true
               required:
-              - title
-              - status
-              - priority
+                - title
+                - status
+                - priority
   "/api/v1/workspaces/{workspace_id}/invitations":
     parameters:
-    - name: workspace_id
-      in: path
-      required: true
-      schema:
-        type: string
+      - name: workspace_id
+        in: path
+        required: true
+        schema:
+          type: string
     post:
       summary: invite member
       tags:
-      - Workspace Invitations
+        - Workspace Invitations
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '201':
+        "201":
           description: created
       requestBody:
         content:
@@ -787,29 +856,29 @@ paths:
                 role:
                   type: string
                   enum:
-                  - member
-                  - admin
+                    - member
+                    - admin
               required:
-              - email
+                - email
   "/api/v1/workspaces":
     get:
       summary: list workspaces
       tags:
-      - Workspaces
+        - Workspaces
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       responses:
-        '200':
+        "200":
           description: successful
     post:
       summary: create workspace
       tags:
-      - Workspaces
+        - Workspaces
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters: []
       responses:
-        '201':
+        "201":
           description: created
       requestBody:
         content:
@@ -826,27 +895,27 @@ paths:
                   type: string
                   nullable: true
               required:
-              - name
+                - name
   "/api/v1/workspaces/{id}/members":
     get:
       summary: list workspace members
       tags:
-      - Workspaces
+        - Workspaces
       security:
-      - bearer_auth: []
+        - bearer_auth: []
       parameters:
-      - name: id
-        in: path
-        description: Workspace ID
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
+          description: Workspace ID
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: successful
 servers:
-- url: http://localhost:3001
-  description: Local development server
+  - url: http://localhost:3001
+    description: Local development server
 components:
   securitySchemes:
     bearer_auth:

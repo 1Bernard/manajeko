@@ -1,0 +1,9 @@
+production:
+  deadline_reminders:
+    class: Task::Jobs::DeadlineReminderJob
+    schedule: every hour
+
+development:
+  deadline_reminders:
+    class: Task::Jobs::DeadlineReminderJob
+    schedule: every hour

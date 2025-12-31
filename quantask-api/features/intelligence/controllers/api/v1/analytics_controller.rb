@@ -4,7 +4,7 @@ module Intelligence
       module V1
         class AnalyticsController < ::Api::V1::BaseController
           def dashboard
-            service = ::Intelligence::Services::AnalyticsService.new(current_user)
+            service = ::Intelligence::Services::AnalyticsService.new(current_user, params[:workspace_id])
             render json: { data: service.dashboard_stats }
           end
         end

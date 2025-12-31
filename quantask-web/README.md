@@ -1,6 +1,6 @@
-# Quantask Frontend (Angular v21)
+# Manajeko Web Frontend (Angular v21)
 
-This is the Angular frontend for the Quantask application.
+This is the Angular frontend for the Manajeko application.
 
 ## Prerequisites
 
@@ -11,11 +11,13 @@ This is the Angular frontend for the Quantask application.
 ## Setup
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Start the development server:
+
    ```bash
    ng serve
    ```
@@ -25,6 +27,7 @@ This is the Angular frontend for the Quantask application.
 ## Features Implemented
 
 ### Authentication
+
 - **Login**: Email/password login with 2FA support
 - **Register**: New user registration with password confirmation
 - **OTP Verification**: 6-digit code verification for 2FA
@@ -32,6 +35,7 @@ This is the Angular frontend for the Quantask application.
 - **Reset Password**: Set new password using token
 
 ### Architecture
+
 - **Standalone Components**: Using modern Angular standalone components
 - **TailwindCSS**: Utility-first styling for premium UI
 - **Core Services**:

@@ -35,7 +35,7 @@ import { CreateProjectModalComponent } from '../../../../shared/components/creat
               <lucide-icon [img]="LayoutGrid" [size]="20"></lucide-icon>
             </div>
             <div *ngIf="sidebarOpen" class="flex-1 min-w-0 animate-in fade-in duration-300">
-              <p class="text-sm font-bold text-gray-900 truncate">Manageko.</p>
+              <p class="text-sm font-bold text-gray-900 truncate">Manajeko.</p>
               <p class="text-xs text-gray-400 truncate">{{ (authService.currentUser$ | async)?.email }}</p>
             </div>
             <lucide-icon *ngIf="sidebarOpen" [img]="MoreVertical" [size]="16" class="text-gray-400"></lucide-icon>
@@ -133,10 +133,17 @@ import { CreateProjectModalComponent } from '../../../../shared/components/creat
           </div>
 
           <div class="flex items-center gap-6">
-             <button (click)="router.navigate(['/dashboard/profile'])" class="flex items-center gap-2 text-gray-500 hover:text-indigo-600 text-sm font-medium px-4 py-2 hover:bg-indigo-50 rounded-xl transition-all group">
-                 <img [src]="(authService.currentUser$ | async)?.avatar_url || 'https://i.pravatar.cc/150?u=1'" alt="Profile" class="w-6 h-6 rounded-full border border-gray-200"/> 
-                 <span>{{ (authService.currentUser$ | async)?.firstName }}</span>
-             </button>
+              <button (click)="router.navigate(['/dashboard/profile'])" class="flex items-center gap-2 text-gray-500 hover:text-indigo-600 text-sm font-medium px-4 py-2 hover:bg-indigo-50 rounded-xl transition-all group">
+                  <ng-container *ngIf="authService.currentUser$ | async as user">
+                      <img *ngIf="user.avatar || user.avatar_url; else topbarAvatarFallback" [src]="user.avatar || user.avatar_url" alt="Profile" class="w-6 h-6 rounded-full border border-gray-200 object-cover"/>
+                      <ng-template #topbarAvatarFallback>
+                          <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-[10px] border border-indigo-200">
+                             {{ user.initials || 'U' }}
+                          </div>
+                      </ng-template>
+                      <span>{{ user.firstName }}</span>
+                  </ng-container>
+              </button>
              <div class="h-6 w-px bg-gray-100"></div>
              <div class="flex items-center gap-1 text-gray-400">
                <div class="relative">

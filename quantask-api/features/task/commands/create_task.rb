@@ -62,6 +62,10 @@ module Task
              )
           end
 
+
+          # Log Activity
+          ::Task::Services::ActivityService.create_activity(@user, task.id, 'created')
+
           Result.success(task, status: :created)
         else
           Result.failure('Validation failed', status: :unprocessable_entity, details: task.errors.as_json)

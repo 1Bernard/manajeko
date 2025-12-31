@@ -1,6 +1,6 @@
-# Quantask API
+# Manajeko API
 
-Ruby on Rails API backend for Quantask task management application.
+Ruby on Rails API backend for Manajeko task management application.
 
 ## Tech Stack
 
@@ -66,7 +66,7 @@ POST /auth/register
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "email": "user@manajeko.com",
   "password": "password123",
   "password_confirmation": "password123",
   "first_name": "John",
@@ -76,6 +76,7 @@ Content-Type: application/json
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "user": {
@@ -83,7 +84,7 @@ Content-Type: application/json
       "id": "1",
       "type": "user",
       "attributes": {
-        "email": "user@example.com",
+        "email": "user@manajeko.com",
         "firstName": "John",
         "lastName": "Doe",
         "fullName": "John Doe",
@@ -104,12 +105,13 @@ POST /auth/login
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "email": "user@manajeko.com",
   "password": "password123"
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "otpRequired": true,
@@ -126,12 +128,13 @@ POST /auth/verify-otp
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "email": "user@manajeko.com",
   "otp_code": "123456"
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiJ9...",
@@ -153,13 +156,14 @@ Authorization: Bearer <token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
     "id": "1",
     "type": "user",
     "attributes": {
-      "email": "user@example.com",
+      "email": "user@manajeko.com",
       "firstName": "John",
       "lastName": "Doe",
       "fullName": "John Doe",
@@ -183,6 +187,7 @@ Content-Type: application/json
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "message": "If this email exists, a code has been sent"
@@ -204,6 +209,7 @@ Content-Type: application/json
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "success": true
@@ -292,6 +298,7 @@ All endpoints return consistent error responses:
 ```
 
 Common HTTP status codes:
+
 - `200 OK` - Success
 - `201 Created` - Resource created
 - `400 Bad Request` - Invalid parameters

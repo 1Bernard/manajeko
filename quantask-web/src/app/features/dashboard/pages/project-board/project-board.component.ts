@@ -292,6 +292,15 @@ export class ProjectBoardComponent implements OnInit, OnDestroy {
                 next: (tasks) => {
                     this.tasks = tasks;
                     this.isLoading = false;
+
+                    // Check for task query param to auto-open detail
+                    const taskId = this.route.snapshot.queryParamMap.get('task');
+                    if (taskId && !this.selectedTask) {
+                        const task = this.tasks.find(t => t.id === parseInt(taskId));
+                        if (task) {
+                            this.openTaskDetail(task);
+                        }
+                    }
                 },
                 error: (error) => {
                     console.error('Error loading tasks:', error);

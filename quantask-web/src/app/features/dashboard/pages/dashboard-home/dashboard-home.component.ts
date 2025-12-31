@@ -147,7 +147,7 @@ interface DashboardViewModel {
                  </h3>
                  <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                      <div class="space-y-4">
-                         <div *ngFor="let act of vm.activities" class="flex gap-4 items-start p-2 rounded-xl hover:bg-gray-50 transition-colors group">
+                         <div *ngFor="let act of vm.activities" (click)="navigateToTask(act.projectId, act.taskId)" class="flex gap-4 items-start p-2 rounded-xl hover:bg-gray-50 transition-colors group cursor-pointer">
                              <img *ngIf="act.user.avatar; else initials" [src]="act.user.avatar" [alt]="act.user.name" class="w-10 h-10 rounded-full object-cover border border-gray-100 shadow-sm flex-shrink-0" />
                              <ng-template #initials>
                                  <div class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-gray-700 shadow-sm border border-gray-100 flex-shrink-0" [style.background-color]="getAvatarColor(act.user.name)">
@@ -159,7 +159,7 @@ interface DashboardViewModel {
                                  <p class="text-sm text-gray-600 leading-snug">
                                      <span class="font-bold text-gray-900">{{ act.user.name }}</span>
                                      <span class="text-gray-500"> {{ act.action }} </span>
-                                     <span class="text-indigo-600 font-medium block truncate mt-0.5">{{ act.target }}</span>
+                                     <span class="text-indigo-600 font-medium block truncate mt-0.5 group-hover:underline">{{ act.target }}</span>
                                  </p>
                                  <p class="text-[11px] text-gray-400 mt-1 font-medium">{{ act.time }}</p>
                              </div>
@@ -184,7 +184,7 @@ interface DashboardViewModel {
                      <div *ngIf="vm.upcomingTasks.length === 0" class="text-center py-8 text-gray-400 text-sm">
                          No upcoming deadlines.
                      </div>
-                     <div *ngFor="let task of vm.upcomingTasks" (click)="navigateToProject()" class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100 hover:border-indigo-200 cursor-pointer transition-colors">
+                     <div *ngFor="let task of vm.upcomingTasks" (click)="navigateToTask(task.projectId, task.id)" class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100 hover:border-indigo-200 cursor-pointer transition-colors">
                          <div class="flex items-center gap-3">
                              <div class="w-1 h-8 rounded-full" [ngClass]="{'bg-red-500': task.priority === 'High', 'bg-blue-500': task.priority !== 'High'}"></div>
                              <div>
@@ -381,13 +381,16 @@ export class DashboardHomeComponent implements OnInit {
       switchMap(() => 
         combineLatest([
           this.authService.currentUser$,
-          this.analyticsService.getTaskStats().pipe(
-            startWith(null), 
-            catchError(err => {
-              console.error('Error fetching stats:', err);
-              // Return null for stats but don't break the stream, let the component handle it or show error
-              return of(null);
-            })
+          this.workspaceService.currentWorkspace$.pipe(
+            switchMap(workspace => 
+              this.analyticsService.getTaskStats(workspace?.id).pipe(
+                startWith(null),
+                catchError(err => {
+                  console.error('Error fetching stats:', err);
+                  return of(null);
+                })
+              )
+            )
           ),
           this.projectService.projects$.pipe(startWith([]))
         ]).pipe(
@@ -432,6 +435,8 @@ export class DashboardHomeComponent implements OnInit {
               };
 
               upcomingTasks = stats.upcomingDeadlines.map((t: any) => ({
+                id: t.id,
+                projectId: t.project_id,
                 title: t.title,
                 date: new Date(t.due_date).toLocaleDateString(),
                 priority: t.priority.charAt(0).toUpperCase() + t.priority.slice(1),
@@ -529,6 +534,12 @@ export class DashboardHomeComponent implements OnInit {
   navigateToProject(): void {
     if (this.currentProjectId) {
       this.router.navigate(['/dashboard/project', this.currentProjectId]);
+    }
+  }
+
+  navigateToTask(projectId: number, taskId: number): void {
+    if (projectId) {
+      this.router.navigate(['/dashboard/project', projectId], { queryParams: { task: taskId } });
     }
   }
 

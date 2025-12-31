@@ -108,8 +108,8 @@ import { Observable } from 'rxjs';
 
                       <div class="md:col-span-2 space-y-2">
                           <label class="text-sm font-bold text-gray-700">Bio</label>
-                          <textarea rows="4" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all font-medium text-gray-800 resize-none">{{ user.bio || 'Passionate about creating intuitive user experiences and design systems. Always looking for the next big challenge in UI/UX.' }}</textarea>
-                          <p class="text-xs text-gray-400 text-right">250 characters left</p>
+                          <textarea [value]="bioText" (input)="updateBioCount($event)" [attr.maxlength]="MAX_BIO_LENGTH" rows="4" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all font-medium text-gray-800 resize-none"></textarea>
+                          <p class="text-xs text-gray-400 text-right">{{ remainingBioChars }} characters left</p>
                       </div>
                   </div>
               </div>
@@ -268,8 +268,24 @@ export class ProfileComponent implements OnInit {
         this.currentUser$ = this.authService.currentUser$;
     }
 
+    // State for bio character count
+    bioText: string = '';
+    readonly MAX_BIO_LENGTH = 250;
+
     ngOnInit() {
-        this.authService.getCurrentUser().subscribe();
+        this.authService.getCurrentUser().subscribe(user => {
+            if (user) {
+                this.bioText = user.bio || '';
+            }
+        });
+    }
+
+    updateBioCount(event: any) {
+        this.bioText = event.target.value;
+    }
+
+    get remainingBioChars(): number {
+        return Math.max(0, this.MAX_BIO_LENGTH - this.bioText.length);
     }
 
     logout() {

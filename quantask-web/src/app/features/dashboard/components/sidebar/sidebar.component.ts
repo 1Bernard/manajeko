@@ -15,7 +15,7 @@ import { CreateWorkspaceModalComponent } from '../../../workspace/components/cre
           <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-indigo-200">
             Q
           </div>
-          <span class="text-xl font-bold text-slate-900 tracking-tight">Quantask</span>
+          <span class="text-xl font-bold text-slate-900 tracking-tight">Manajeko</span>
         </div>
         <nav class="flex flex-1 flex-col">
           <ul role="list" class="flex flex-1 flex-col gap-y-7">

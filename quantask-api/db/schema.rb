@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_15_111625) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_30_092839) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -169,6 +169,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_15_111625) do
     t.datetime "updated_at", null: false
     t.string "task_type", default: "task"
     t.datetime "start_date"
+    t.datetime "reminder_sent_at"
     t.index ["assignee_id"], name: "index_tasks_on_assignee_id"
     t.index ["creator_id"], name: "index_tasks_on_creator_id"
     t.index ["position"], name: "index_tasks_on_position"

@@ -38,6 +38,8 @@ export class AvatarComponent {
   @Input() border: string = 'border-2 border-white';
 
   getFontSize(size: string): string {
+    if (size.includes('w-4')) return '8px';
+    if (size.includes('w-5')) return '9px';
     if (size.includes('w-6') || size.includes('w-7')) return '10px';
     if (size.includes('w-8')) return '12px';
     if (size.includes('w-10')) return '14px';

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { LucideAngularModule, ArrowRight, Play, ChevronRight, CheckCircle2 } from 'lucide-angular';
+import { LucideAngularModule, ArrowRight, Github, ChevronRight, CheckCircle2, LayoutGrid, Activity } from 'lucide-angular';
 import { RevealOnScrollComponent } from '../../../../shared/components/reveal-on-scroll/reveal-on-scroll.component';
 
 @Component({
@@ -11,88 +11,105 @@ import { RevealOnScrollComponent } from '../../../../shared/components/reveal-on
   template: `
     <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
       <!-- Background Gradients -->
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] bg-gradient-to-b from-indigo-50/50 via-purple-50/30 to-transparent -z-10"></div>
-      <div class="absolute top-20 right-0 w-[500px] h-[500px] bg-indigo-200/20 rounded-full blur-3xl -z-10 animate-pulse"></div>
-      <div class="absolute top-40 left-0 w-[400px] h-[400px] bg-pink-200/20 rounded-full blur-3xl -z-10"></div>
-
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] bg-gradient-to-b from-indigo-50/20 via-slate-50/30 to-transparent -z-10"></div>
+      <div class="absolute top-40 right-10 w-[600px] h-[600px] bg-blue-100/10 rounded-full blur-[120px] -z-10"></div>
+      
       <div class="max-w-7xl mx-auto px-6 text-center">
         <app-reveal-on-scroll>
-          <div class="inline-flex items-center gap-2 bg-white border border-indigo-100 shadow-sm rounded-full px-4 py-1.5 mb-8">
-            <span class="flex h-2 w-2 rounded-full bg-indigo-500"></span>
-            <span class="text-xs font-bold text-indigo-900 tracking-wide uppercase">New v2.0 Released</span>
-            <lucide-icon [img]="ChevronRight" [size]="14" class="text-indigo-400"></lucide-icon>
+          <div class="inline-flex items-center gap-2 bg-slate-50 border border-slate-100 shadow-sm rounded-full px-5 py-1.5 mb-10">
+            <span class="flex h-2 w-2 rounded-full bg-indigo-500/80 animate-pulse"></span>
+            <span class="text-[10px] font-black text-slate-800 tracking-[0.2em] uppercase">Private Beta Access</span>
+            <lucide-icon [img]="ChevronRight" [size]="12" class="text-slate-300"></lucide-icon>
           </div>
         </app-reveal-on-scroll>
 
         <app-reveal-on-scroll [delay]="100">
-          <h1 class="text-5xl lg:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-[1.1]">
-            Streamline HR Ops with <br class="hidden md:block"/>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-500">Dynamic Dashboards</span>
+          <h1 class="text-6xl lg:text-[5.5rem] font-black text-slate-900 tracking-tight mb-8 leading-[0.95] max-w-4xl mx-auto">
+            Master your focus. <br class="hidden md:block"/>
+            <span class="text-indigo-600">Amplify impact.</span>
           </h1>
         </app-reveal-on-scroll>
 
         <app-reveal-on-scroll [delay]="200">
-          <p class="text-lg text-slate-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Craftboard empowers teams to organize, track, and manage complex workflows with ease. 
-            The ultimate solution for modern business automation.
+          <p class="text-xl text-slate-400 font-medium max-w-xl mx-auto mb-14 leading-relaxed">
+            Manajeko is the ultimate sanctuary for elite creators. Experience task management redesigned for pure clarity and momentum.
           </p>
         </app-reveal-on-scroll>
 
         <app-reveal-on-scroll [delay]="300">
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
-            <a routerLink="/auth/register" class="w-full sm:w-auto px-8 py-4 bg-[#1C1D22] text-white rounded-2xl font-bold text-lg hover:bg-indigo-600 hover:shadow-xl hover:shadow-indigo-500/20 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
-              Start for free <lucide-icon [img]="ArrowRight" [size]="18"></lucide-icon>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24">
+            <a routerLink="/auth/register" class="w-full sm:w-auto px-10 py-5 bg-slate-900 text-white rounded-3xl font-bold text-lg hover:bg-indigo-600 hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-500 transform hover:-translate-y-1 flex items-center justify-center gap-3">
+              Experience Now <lucide-icon [img]="ArrowRight" [size]="20"></lucide-icon>
             </a>
-            <button class="w-full sm:w-auto px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-2xl font-bold text-lg hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center justify-center gap-2 group">
-              <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
-                <lucide-icon [img]="Play" [size]="10" class="fill-indigo-600 text-indigo-600 ml-0.5"></lucide-icon>
-              </div>
-              View Demo
-            </button>
+            <a href="https://github.com/1Bernard/quantask.git" target="_blank" class="w-full sm:w-auto px-10 py-5 bg-white text-slate-900 border border-slate-100 rounded-3xl font-bold text-lg hover:border-slate-300 hover:shadow-xl hover:shadow-slate-100 transition-all duration-500 flex items-center justify-center gap-3 group">
+              View Source <lucide-icon [img]="Github" [size]="20" class="text-slate-400 group-hover:text-slate-900 transition-colors"></lucide-icon>
+            </a>
           </div>
         </app-reveal-on-scroll>
 
-        <!-- Hero Dashboard Mockup -->
+        <!-- Abstract Floating UI -->
         <app-reveal-on-scroll [delay]="400">
-          <div class="relative max-w-5xl mx-auto perspective-1000 group">
-            <!-- Floating Cards Decorations -->
-            <div class="absolute -left-12 top-20 bg-white p-4 rounded-2xl shadow-xl z-20 hidden lg:block animate-bounce duration-[3000ms]">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                  <lucide-icon [img]="CheckCircle2" [size]="20"></lucide-icon>
+          <div class="relative max-w-5xl mx-auto h-[500px] mt-16 perspective-2000 group">
+            <!-- Main Dashboard Card -->
+            <div class="absolute inset-0 bg-white/40 backdrop-blur-2xl rounded-[3rem] border border-white/40 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] overflow-hidden transform group-hover:scale-[1.01] transition-all duration-1000 rotate-x-6">
+              <div class="flex h-full">
+                <!-- Sidebar Decor -->
+                <div class="w-16 h-full bg-slate-900 flex flex-col items-center py-8 gap-6">
+                  <div class="w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                    <lucide-icon [img]="LayoutGrid" [size]="18"></lucide-icon>
+                  </div>
+                  <div class="w-2 h-2 rounded-full bg-slate-700" *ngFor="let i of [1,2,3,4]"></div>
                 </div>
-                <div>
-                  <p class="text-xs text-gray-400 font-semibold">Status Update</p>
-                  <p class="text-sm font-bold text-gray-800">Project Completed</p>
+                <!-- Content Decor -->
+                <div class="flex-1 p-10 text-left">
+                  <div class="flex items-center justify-between mb-12">
+                    <div class="space-y-2">
+                      <div class="h-6 w-48 bg-slate-900/10 rounded-full"></div>
+                      <div class="h-4 w-32 bg-slate-900/5 rounded-full"></div>
+                    </div>
+                    <div class="flex -space-x-3">
+                      <div class="w-10 h-10 rounded-full bg-indigo-100 border-2 border-white flex items-center justify-center text-xs font-bold text-indigo-600">JD</div>
+                      <div class="w-10 h-10 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-xs font-bold text-slate-600">RT</div>
+                      <div class="w-10 h-10 rounded-full bg-slate-900 border-2 border-white flex items-center justify-center text-xs font-bold text-white">+4</div>
+                    </div>
+                  </div>
+                  <div class="space-y-6">
+                    <div *ngFor="let i of [1,2,3]" class="flex items-center gap-6 p-4 rounded-2xl border border-slate-50 bg-white/20">
+                      <div class="w-6 h-6 rounded-lg border-2 border-slate-200"></div>
+                      <div class="h-4 w-1/2 bg-slate-900/5 rounded-full"></div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            
-            <div class="absolute -right-8 bottom-32 bg-white p-4 rounded-2xl shadow-xl z-20 hidden lg:block animate-bounce duration-[4000ms]">
-              <div class="flex items-center gap-3">
-                <div class="flex -space-x-2">
-                  <img *ngFor="let i of [1,2,3]" [src]="'https://i.pravatar.cc/100?u=' + i" class="w-8 h-8 rounded-full border-2 border-white"/>
-                </div>
-                <p class="text-sm font-bold text-gray-800">+ 5 New Members</p>
               </div>
             </div>
 
-            <!-- Main Image -->
-            <div class="relative rounded-2xl bg-white p-2 shadow-2xl border border-gray-200/50 transform group-hover:rotate-0 transition-transform duration-700 ease-out">
-              <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 to-purple-500/5 rounded-2xl"></div>
-              <img 
-                src="https://img.freepik.com/free-vector/gradient-ui-ux-elements-background_23-2149056159.jpg?w=1800" 
-                alt="Dashboard Preview" 
-                class="rounded-xl w-full h-auto object-cover border border-gray-100"
-              />
-              <!-- Overlay -->
-              <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none flex items-center justify-center">
-                <button class="bg-white text-indigo-600 px-6 py-3 rounded-full font-bold shadow-lg transform scale-90 group-hover:scale-100 transition-transform">Explore Dashboard</button>
+            <!-- Floating Activity Card -->
+            <div class="absolute -top-12 -left-8 w-64 p-6 bg-white/80 backdrop-blur-xl rounded-3xl border border-white shadow-2xl animate-float-slow transform -rotate-12 z-20">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+                  <lucide-icon [img]="Activity" [size]="20"></lucide-icon>
+                </div>
+                <div>
+                  <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Velocity</div>
+                  <div class="text-lg font-black text-slate-900">+12.4%</div>
+                </div>
+              </div>
+              <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full w-3/4 bg-emerald-500 rounded-full"></div>
               </div>
             </div>
+
+            <!-- Floating Task Card -->
+            <div class="absolute -bottom-10 -right-8 w-72 p-6 bg-indigo-600 rounded-3xl shadow-2xl animate-float transform rotate-6 z-20">
+              <div class="flex items-center gap-3 mb-4">
+                <lucide-icon [img]="CheckCircle2" [size]="18" class="text-indigo-200"></lucide-icon>
+                <span class="text-xs font-bold text-indigo-100 tracking-wide uppercase">Active Milestone</span>
+              </div>
+              <h4 class="text-white font-black text-lg mb-2">Refine Flow Analytics</h4>
+              <p class="text-indigo-200 text-xs font-medium leading-relaxed opacity-80">Finalizing the integration of real-time velocity tracking for elite teams.</p>
+            </div>
             
-            <!-- Reflection/Glow below -->
-            <div class="absolute -bottom-20 left-10 right-10 h-20 bg-indigo-600/20 blur-[100px] -z-10"></div>
+            <div class="absolute -bottom-16 left-1/4 right-1/4 h-32 bg-indigo-500/10 blur-[120px] -z-10"></div>
           </div>
         </app-reveal-on-scroll>
       </div>
@@ -101,7 +118,9 @@ import { RevealOnScrollComponent } from '../../../../shared/components/reveal-on
 })
 export class HeroComponent {
   readonly ArrowRight = ArrowRight;
-  readonly Play = Play;
+  readonly Github = Github;
   readonly ChevronRight = ChevronRight;
   readonly CheckCircle2 = CheckCircle2;
+  readonly LayoutGrid = LayoutGrid;
+  readonly Activity = Activity;
 }
