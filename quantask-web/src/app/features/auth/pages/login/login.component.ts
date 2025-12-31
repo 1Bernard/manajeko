@@ -33,7 +33,7 @@ import { ToastNotificationComponent } from '../../../../shared/components/toast-
               <input 
                 type="email" 
                 formControlName="email"
-                class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none"
+                class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none"
                 placeholder="name@company.com"
               />
             </div>
@@ -46,7 +46,7 @@ import { ToastNotificationComponent } from '../../../../shared/components/toast-
               <input 
                 [type]="showPassword ? 'text' : 'password'" 
                 formControlName="password"
-                class="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none"
+                class="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none"
                 placeholder="••••••••"
               />
               <button 

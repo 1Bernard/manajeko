@@ -24,7 +24,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
                     (focus)="showResults = true"
                     (keydown)="onKeyDown($event)"
                     placeholder="Search tasks, projects, people..."
-                    class="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
+                    class="w-full pl-12 pr-10 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
                 />
                 <button 
                     *ngIf="query"
