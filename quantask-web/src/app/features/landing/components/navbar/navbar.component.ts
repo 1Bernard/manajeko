@@ -21,6 +21,7 @@ import { LucideAngularModule, LayoutGrid, Menu, X } from 'lucide-angular';
         <div class="hidden md:flex items-center gap-8">
           <a *ngFor="let item of menuItems" 
              [href]="'#' + item.toLowerCase()" 
+             (click)="scrollToSection(item.toLowerCase(), $event)"
              class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">
             {{ item }}
           </a>
@@ -43,7 +44,7 @@ import { LucideAngularModule, LayoutGrid, Menu, X } from 'lucide-angular';
       <div *ngIf="mobileMenuOpen" class="absolute top-full left-0 w-full bg-white border-b border-gray-100 p-6 md:hidden flex flex-col gap-4 shadow-xl animate-in slide-in-from-top-5">
         <a *ngFor="let item of menuItems" 
            [href]="'#' + item.toLowerCase()" 
-           (click)="mobileMenuOpen = false"
+           (click)="scrollToSection(item.toLowerCase(), $event)"
            class="text-lg font-medium text-slate-600 py-2 border-b border-gray-50">
           {{ item }}
         </a>
