@@ -68,6 +68,16 @@ export class NavbarComponent {
     this.scrolled = window.scrollY > 50;
   }
 
+  scrollToSection(id: string, event: Event) {
+    event.preventDefault();
+    this.mobileMenuOpen = false;
+    
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   toggleMobileMenu() {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
