@@ -205,6 +205,9 @@ export class RegisterComponent {
           };
           sessionStorage.setItem('otp_email', this.registerForm.value.email);
           sessionStorage.setItem('otp_method', this.otpMethod);
+          if (response.otp_code) {
+            sessionStorage.setItem('demo_otp_code', response.otp_code);
+          }
           setTimeout(() => {
             this.router.navigate(['/auth/verify-otp']);
           }, 1500);

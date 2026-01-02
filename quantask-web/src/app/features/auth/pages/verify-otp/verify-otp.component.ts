@@ -30,6 +30,15 @@ import { ToastNotificationComponent } from '../../../../shared/components/toast-
           <br/><span class="font-semibold text-gray-900">{{ email }}</span>
         </p>
 
+        <!-- Demo Mode OTP Display -->
+        <div *ngIf="demoOtpCode" class="mb-8 p-4 bg-indigo-50 border border-indigo-100 rounded-xl animate-in fade-in slide-in-from-top-4">
+          <p class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">Demo Mode Access Code</p>
+          <div class="flex items-center justify-center gap-3">
+             <span class="text-3xl font-black text-indigo-600 tracking-widest">{{ demoOtpCode }}</span>
+          </div>
+          <p class="text-xs text-indigo-400 mt-2">Use this code to verify your account</p>
+        </div>
+
         <form [formGroup]="otpForm" (ngSubmit)="onSubmit()" class="space-y-6">
           <div class="flex justify-center gap-2">
             <input 
@@ -71,6 +80,7 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
   isLoading = false;
   email: string = '';
   otpMethod: string = 'email';
+  demoOtpCode: string | null = null;
   notification: { type: 'success' | 'error', message: string } | null = null;
   private popStateListener: (() => void) | null = null;
 
@@ -98,6 +108,7 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
     window.addEventListener('popstate', this.popStateListener);
     this.email = sessionStorage.getItem('otp_email') || '';
     this.otpMethod = sessionStorage.getItem('otp_method') || 'email';
+    this.demoOtpCode = sessionStorage.getItem('demo_otp_code');
 
     if (!this.email) {
       this.router.navigate(['/auth/login']);
@@ -144,9 +155,12 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
     this.authService.resendOtp(this.email).subscribe({
       next: (response) => {
         this.isLoading = false;
+        if (response.otp_code) {
+           this.demoOtpCode = response.otp_code;
+        }
         this.notification = {
           type: 'success',
-          message: 'A new code has been sent!' + (response.otp_code ? ` (Code: ${response.otp_code})` : '')
+          message: 'A new code has been sent!'
         };
         setTimeout(() => this.notification = null, 4000);
       },

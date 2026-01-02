@@ -121,6 +121,9 @@ export class LoginComponent {
           };
           // Store email for OTP page
           sessionStorage.setItem('otp_email', email);
+          if (response.otp_code) {
+             sessionStorage.setItem('demo_otp_code', response.otp_code);
+          }
           setTimeout(() => {
             this.router.navigate(['/auth/verify-otp'], { replaceUrl: true });
           }, 1000);
