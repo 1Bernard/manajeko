@@ -21,7 +21,7 @@ module Identity
         token = JsonWebToken.encode(user_id: user.id)
         
         # 5. Return Composite Result
-        Result.success({ user: user, token: token, message: "Account created. OTP sent." }, status: :created)
+        Result.success({ user: user, token: token, message: "Account created. OTP sent.", otp_code: otp_code }, status: :created)
       end
     end
   end

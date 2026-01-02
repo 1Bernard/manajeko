@@ -12,7 +12,7 @@ module Identity
         # Send Notification
         ::Global::Commands::SendNotification.call(user, :otp, otp_code)
 
-        Result.success({ message: "OTP resent successfully." }, status: :ok)
+        Result.success({ message: "OTP resent successfully.", otp_code: otp_code }, status: :ok)
       end
     end
   end

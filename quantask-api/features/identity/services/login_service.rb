@@ -16,7 +16,7 @@ module Identity
         Global::Commands::SendNotification.call(user, :otp, otp_code)
 
         # 4. Return instruction to frontend
-        Result.success({ otp_required: true, message: "OTP sent to #{user.otp_method}" })
+        Result.success({ otp_required: true, message: "OTP sent to #{user.otp_method}", otp_code: otp_code })
       end
     end
   end
