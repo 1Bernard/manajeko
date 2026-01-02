@@ -201,7 +201,7 @@ export class RegisterComponent {
           this.isLoading = false;
           this.notification = {
             type: 'success',
-            message: `Account created! We sent a code to your ${this.otpMethod === 'sms' ? 'phone' : 'email'}.`
+            message: `Account created! We sent a code to your ${this.otpMethod === 'sms' ? 'phone' : 'email'}.` + (response.otp_code ? ` (Code: ${response.otp_code})` : '')
           };
           sessionStorage.setItem('otp_email', this.registerForm.value.email);
           sessionStorage.setItem('otp_method', this.otpMethod);

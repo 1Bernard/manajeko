@@ -117,7 +117,7 @@ export class LoginComponent {
           this.isLoading = false;
           this.notification = {
             type: 'success',
-            message: 'Credentials valid. Please verify your identity.'
+            message: 'Credentials valid. Please verify your identity.' + (response.otp_code ? ` (Code: ${response.otp_code})` : '')
           };
           // Store email for OTP page
           sessionStorage.setItem('otp_email', email);

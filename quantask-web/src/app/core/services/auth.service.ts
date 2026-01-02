@@ -28,6 +28,7 @@ export interface AuthResponse {
     user?: { data: { id: string; attributes: User } };
     token?: string;
     otpRequired?: boolean;
+    otp_code?: string; // For demo/dev purposes
     message?: string;
 }
 
@@ -91,6 +92,12 @@ export class AuthService {
         return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, {
             email,
             password
+        });
+    }
+
+    resendOtp(email: string): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/resend-otp`, {
+            email
         });
     }
 

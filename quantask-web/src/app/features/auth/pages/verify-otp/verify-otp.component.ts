@@ -140,11 +140,25 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
   }
 
   resendCode() {
-    this.notification = {
-      type: 'success',
-      message: 'A new code has been sent!'
-    };
-    setTimeout(() => this.notification = null, 4000);
+    this.isLoading = true;
+    this.authService.resendOtp(this.email).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.notification = {
+          type: 'success',
+          message: 'A new code has been sent!' + (response.otp_code ? ` (Code: ${response.otp_code})` : '')
+        };
+        setTimeout(() => this.notification = null, 4000);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.notification = {
+          type: 'error',
+          message: error.error?.message || 'Failed to resend code.'
+        };
+        setTimeout(() => this.notification = null, 4000);
+      }
+    });
   }
 
   ngOnDestroy() {
