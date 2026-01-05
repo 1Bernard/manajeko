@@ -44,7 +44,6 @@ To run the application locally, you will need to set up both the backend and fro
 - **Ruby:** 3.x
 - **Node.js:** 18+
 - **PostgreSQL**
-- **Redis** (for background jobs)
 
 ### 1. Backend Setup (`quantask-api`)
 
