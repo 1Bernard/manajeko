@@ -91,4 +91,4 @@ Manajeko is configured for deployment on **Render.com**.
 
 ---
 
-© 2024 Manajeko. All rights reserved.
+© 2025 Manajeko. All rights reserved.
